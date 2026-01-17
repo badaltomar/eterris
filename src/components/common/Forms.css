@@ -1,0 +1,240 @@
+
+/* Form Page Layout */
+.add-lead-page {
+  padding: 24px;
+}
+
+/* FORM Page Layout*/
+.lead-form {
+  background: #fff;
+  padding: 24px;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+}
+
+.form-title {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+
+/* CUSTOM SELECT */
+.custom-select {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.select-dropdown {
+  margin-top: 6px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  overflow: hidden;
+}
+
+.select-option {
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.select-option:hover {
+  background: #f3f4f6;
+}
+
+/* TAGS */
+.pill-section {
+  margin-top: 20px;
+}
+
+.pill-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
+  background: #f3f4f6;
+  cursor: pointer;
+}
+
+.pill.active {
+  background: #4f46e5;
+  color: white;
+}
+
+/* BUTTONS */
+.form-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+
+/* ============================= */
+/* SAVED SECTION (AGENTS + LEADS) */
+/* ============================= */
+
+.saved-section {
+  margin-top: 40px;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+/* Section Heading */
+.saved-section h3 {
+  margin-bottom: 18px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  letter-spacing: -0.2px;
+}
+
+/* Grid */
+.saved-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+/* Saved Card (shared) */
+.saved-card {
+  background: #ffffff;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid #6366f1;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  max-width: 340px;
+  transition: all 0.2s ease;
+}
+
+/* Hover */
+.saved-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+  border-left-color: #4338ca;
+}
+
+/* Card Title (Lead name / Agent name) */
+.saved-card h4 {
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Card Text */
+.saved-card p {
+  margin: 4px 0;
+  font-size: 13.5px;
+  color: #374151;
+}
+
+.saved-card b {
+  color: #111827;
+}
+
+/* ============================= */
+/* TAG CHIPS (LEADS) */
+/* ============================= */
+
+.tag-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+/* Base chip */
+.tag-chip {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 12px;
+  background: #f1f5f9;
+  color: #334155;
+}
+
+/* High Value → Blue */
+.tag-highvalue {
+  background: #ecfeff;
+  color: #0369a1;
+
+}
+
+/* VIP → Purple */
+.tag-vip {
+  background: #f5f3ff;
+  color: #6d28d9;
+
+
+}
+
+/* Urgent → Orange */
+.tag-urgent {
+  background: #fff7ed;
+  color: #c2410c;
+
+}
+
+
+/* ============================= */
+/* OPTIONAL: STATUS / PRIORITY */
+/* ============================= */
+
+.saved-card p span {
+  font-weight: 500;
+}
+
+/* Priority highlight */
+.saved-card p b + span {
+  color: #4338ca;
+}

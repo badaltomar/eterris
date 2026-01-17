@@ -1,0 +1,273 @@
+/* ============================= */
+/* RESET / BOX SIZING (CRITICAL) */
+/* ============================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+/* ============================= */
+/* GLOBAL FONT & BASE TYPOGRAPHY */
+/* ============================= */
+
+html,
+body,
+#root,
+.app-root {
+  font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14.8px;
+  line-height: 1.55;
+  color: #111827;
+}
+
+/* ============================= */
+/* HEADINGS */
+/* ============================= */
+
+h1 {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  margin-bottom: 16px;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.25px;
+  margin-bottom: 16px;
+}
+
+h3 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  margin-bottom: 12px;
+}
+
+h4 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.15px;
+  margin-bottom: 8px;
+}
+
+h5 {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+/* ============================= */
+/* TEXT ELEMENTS */
+/* ============================= */
+
+p {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #374151;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+span {
+  font-size: 13px;
+  font-weight: 400;
+  color: inherit;
+}
+
+label {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+/* ============================= */
+/* Buttons */
+/* ============================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Spacing between text and icons */
+  padding: 10px 20px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  border-radius: 10px; 
+  border: 1px solid transparent; 
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+  user-select: none;
+  text-decoration: none;
+}
+
+/* Add a subtle 'press' effect when clicking */
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* Focus rings for accessibility (Tab navigation) */
+.btn:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+/* ----------------------------- */
+/* PRIMARY BUTTON */
+/* ----------------------------- */
+.btn.primary {
+  background: #4f46e5;
+  color: #ffffff;
+  /* Subtle colored shadow for depth */
+  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2), 
+              0 2px 4px -1px rgba(79, 70, 229, 0.1);
+}
+
+.btn.primary:hover {
+  background: #4338ca; /* Slightly darker indigo */
+  /* Lift effect on hover */
+  transform: translateY(-1px); 
+  box-shadow: 0 6px 10px -1px rgba(79, 70, 229, 0.25), 
+              0 2px 4px -1px rgba(79, 70, 229, 0.1);
+}
+
+.btn.primary:active {
+  background: #3730a3;
+  transform: scale(0.97) translateY(0); /* Reset lift on press */
+  box-shadow: none;
+}
+
+/* ----------------------------- */
+/* SECONDARY BUTTON */
+/* ----------------------------- */
+/* Clean white surface with border - fits any background */
+.btn.secondary {
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn.secondary:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #111827;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn.secondary:active {
+  background: #f3f4f6;
+  transform: scale(0.97) translateY(0);
+}
+
+/* ============================= */
+/* CLEAR / RESET BUTTON */
+/* ============================= */
+
+.btn-reset {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  
+  /* Initial State (Soft Red) */
+  background: #fff1f2; /* Rose-50 */
+  color: #e11d48;       /* Rose-600 */
+  border: 1px solid #fecdd3; /* Rose-200 */
+  
+  /* Animation */
+  animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-reset:hover {
+  background: #ffe4e6; /* Rose-100 */
+  border-color: #fda4af; /* Rose-300 */
+  color: #be123c;        /* Rose-700 */
+}
+
+.btn-reset:active {
+  transform: scale(0.95);
+  background: #fecdd3;
+}
+
+/* Pop-in Animation Keyframes */
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* MOBILE ADJUSTMENT */
+@media (max-width: 850px) {
+  /* On mobile, we might want the clear button to stretch or align differently */
+  .btn-reset {
+    justify-content: center;
+  }
+}
+
+/* ============================= */
+/* FORM & UI ELEMENTS */
+/* ============================= */
+
+input,
+textarea,
+select,
+button,
+.table,
+.dropdown-menu,
+.modal,
+.toast,
+.alert {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* ============================= */
+/* APP LAYOUT / Background */
+/* ============================= */
+
+.app-root {
+  display: flex;
+  min-height: 100vh;
+  background-color: #F4F6FA;
+}
+
+.page-content {
+  flex: 1;
+}
+
+/* ============================= */
+/* PAGE LOAD ANIMATION */
+/* ============================= */
+
+.pageLoadAnimation {
+  animation: fadeIn 0.4s ease-in;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

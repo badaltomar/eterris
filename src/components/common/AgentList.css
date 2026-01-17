@@ -1,0 +1,60 @@
+/* PAGE */
+.agent-page {
+  padding: 24px;
+}
+
+/* HEADER */
+.agent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+/* AGENT LIST */
+.agent-list {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+/* AGENT CARD */
+.agent-card {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.15s ease;
+}
+
+.agent-card:last-child {
+  border-bottom: none;
+}
+
+.agent-card:hover {
+  background: #f9fafb;
+}
+
+/* AGENT INFO */
+.agent-info h4 {
+  margin-bottom: 4px;
+  color: #111827;
+}
+
+.agent-info p {
+  color: #6b7280;
+}
+
+/* BACK LINK */
+.back-link {
+  margin-top: 20px;
+}
+
+.back-link a {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4f46e5;
+}
+
+.back-link a:hover {
+  color: #3832a2;
+}
