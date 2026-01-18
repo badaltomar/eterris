@@ -222,6 +222,25 @@ label {
 }
 
 /* ============================= */
+/* BACK LINK */
+/* ============================= */
+.back-link {
+  margin-top: 24px;
+}
+.back-link a {
+  font-size: 14px;
+  color: #6b7280;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+.back-link a:hover {
+  color: #111827;
+}
+
+/* ============================= */
 /* FORM & UI ELEMENTS */
 /* ============================= */
 

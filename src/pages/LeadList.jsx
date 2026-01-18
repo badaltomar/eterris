@@ -14,52 +14,71 @@ import {
   FileText,
   Phone,
   Inbox,
-  ArrowUpDown,
   RotateCcw,
 } from "lucide-react";
 import "../components/common/LeadList.css";
 
 const fakeLeads = [
   {
-    leadName: "Acme Corp International Holdings", // Made longer to test mobile spacing
+    id: 1,
+    leadName: "Acme Corp International Holdings",
     leadSource: "Website",
-    agent: "Agent A",
+    agent: {
+      agentId: "123abc",
+      agentName: "Agent A"
+    },
     leadStatus: "New",
     timeToClose: 14,
     priority: "High",
     tags: ["High Value", "VIP"],
   },
   {
+    id: 2,
     leadName: "John Enterprises",
     leadSource: "Referral",
-    agent: "Agent B",
+    agent: {
+      agentId: "456abc",
+      agentName: "Agent B"
+    },
     leadStatus: "Contacted",
     timeToClose: 21,
     priority: "Medium",
     tags: ["Urgent"],
   },
   {
+    id: 3,
     leadName: "BlueSky Solutions",
     leadSource: "Cold Call",
-    agent: "Agent C",
+    agent: {
+      agentId: "789abc",
+      agentName: "Agent C"
+    },
     leadStatus: "Qualified",
     timeToClose: 30,
     priority: "High",
     tags: ["High Value"],
   },
   {
+    id: 4,
     leadName: "Nova Retail Group",
     leadSource: "Website",
-    agent: "Agent A",
+    agent: {
+      agentId: "101efg",
+      agentName: "Agent A"
+    },
     leadStatus: "Proposal Sent",
     timeToClose: 10,
     priority: "High",
     tags: ["VIP", "Urgent"],
   },
   {
+    id: 5,
     leadName: "GreenField Logistics",
     leadSource: "Referral",
-    agent: "Agent B",
+    agent: {
+      agentId: "456abc",
+      agentName: "Agent B"
+    },
     leadStatus: "Closed",
     timeToClose: 5,
     priority: "Low",
@@ -104,7 +123,7 @@ export default function LeadList() {
         lead.leadSource.toLowerCase().includes(search.toLowerCase());
 
       const matchesStatus = !statusFilter || lead.leadStatus === statusFilter;
-      const matchesAgent = !agentFilter || lead.agent === agentFilter;
+      const matchesAgent = !agentFilter || lead.agent.agentName === agentFilter;
 
       return matchesSearch && matchesStatus && matchesAgent;
     })
@@ -196,11 +215,11 @@ export default function LeadList() {
               onChange={(e) => setStatusFilter(e.target.value)}
             >
               <option value="">All Statuses</option>
-              <option>New</option>
-              <option>Contacted</option>
-              <option>Qualified</option>
-              <option>Proposal Sent</option>
-              <option>Closed</option>
+              <option value={"New"}>New</option>
+              <option value={"Contacted"}>Contacted</option>
+              <option value={"Qualified"}>Qualified</option>
+              <option value={"Proposal Sent"}>Proposal Sent</option>
+              <option value={"Closed"}>Closed</option>
             </select>
           </div>
 
@@ -211,9 +230,9 @@ export default function LeadList() {
               onChange={(e) => setAgentFilter(e.target.value)}
             >
               <option value="">All Agents</option>
-              <option>Agent A</option>
-              <option>Agent B</option>
-              <option>Agent C</option>
+              <option value={"Agent A"}>Agent A</option>
+              <option value={"Agent B"}>Agent B</option>
+              <option value={"Agent C"}>Agent C</option>
             </select>
           </div>
 
@@ -226,10 +245,10 @@ export default function LeadList() {
                 onChange={(e) => setSortOption(e.target.value)}
               >
                 <option value="">Default (No Sort)</option>
-                <option value="priority-desc">Priority: High → Low</option>
-                <option value="priority-asc">Priority: Low → High</option>
-                <option value="time-asc">Time: Sooner First</option>
-                <option value="time-desc">Time: Later First</option>
+                <option value={"priority-desc"}>Priority: High → Low</option>
+                <option value={"priority-asc"}>Priority: Low → High</option>
+                <option value={"time-asc"}>Time: Sooner First</option>
+                <option value={"time-desc"}>Time: Later First</option>
               </select>
             </div>
           </div>
@@ -250,7 +269,7 @@ export default function LeadList() {
       <section className="lead-list">
         {filteredLeads.length > 0 ? (
           filteredLeads.map((lead, i) => (
-            <NavLink to={`/leads/${i}`} key={i} className="lead-row">
+            <NavLink to={`/leads/${lead.id}`} key={lead.id} className="lead-row">
               {/* MOBILE HEADER: WRAPS NAME & STATUS */}
               <div className="mobile-card-header">
                 {/* Column 1: Name */}
@@ -286,7 +305,7 @@ export default function LeadList() {
               <div className="col-agent">
                 <div className="agent-badge">
                   <User size={12} />
-                  {lead.agent}
+                  {lead.agent.agentName}
                 </div>
               </div>
 

@@ -7,6 +7,7 @@
   import AddNewLead from './pages/AddNewLead.jsx'
   import AddNewAgent from './pages/AddNewAgent.jsx'
   import LeadList from './pages/LeadList.jsx'
+  import LeadDetails from './pages/LeadDetails.jsx'
   import AgentList from './pages/AgentList.jsx'
 
   import { Flip, ToastContainer } from 'react-toastify'
@@ -35,6 +36,10 @@
         {
           path: "/leads",
           element: <LeadList />
+        },
+        {
+          path: "/leads/:leadId",
+          element: <LeadDetails />
         },
       ]
     }

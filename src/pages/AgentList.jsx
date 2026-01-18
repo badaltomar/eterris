@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import "../components/common/AgentList.css";
+import { ArrowLeft } from "lucide-react";
 
 export default function AgentList() {
   const AGENTS = [
@@ -33,8 +34,8 @@ export default function AgentList() {
 
       {/* BACK LINK */}
       <div className="back-link">
-        <NavLink to="/" className="text-decoration-none">
-          ← Back to Dashboard
+        <NavLink to="/">
+          <ArrowLeft size={16} /> Back to Dashboard
         </NavLink>
       </div>
     </main>
