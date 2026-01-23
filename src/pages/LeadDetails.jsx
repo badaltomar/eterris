@@ -1,28 +1,27 @@
 import { useState, useEffect } from "react";
-import { useParams, NavLink, useNavigate } from "react-router-dom";
+import { useParams, NavLink } from "react-router-dom";
 import {
   ArrowLeft,
   User,
   Briefcase,
   Clock,
-  Flag,
-  Tag,
-  Hash,
   Edit2,
   Save,
-  XCircle,
+  Trash2,
   Zap,
   Phone,
-  CheckCircle,
   FileText,
   Inbox,
   Globe,
   ChevronRight,
   Check,
+  MessageSquare,
+  Send,
+  History,
 } from "lucide-react";
 import "../components/common/LeadDetails.css";
+import initialFakeLeads from "/leads.json";
 
-// --- CONSTANTS ---
 const PIPELINE_STEPS = [
   "New",
   "Contacted",
@@ -34,83 +33,23 @@ const PIPELINE_STEPS = [
 export default function LeadDetails() {
   const { leadId } = useParams();
 
-  const fakeLeads = [
-    {
-      id: 1,
-      leadName: "Acme Corp International Holdings",
-      leadSource: "Website",
-      agent: {
-        agentId: "123abc",
-        agentName: "Agent A",
-      },
-      leadStatus: "New",
-      timeToClose: 14,
-      priority: "High",
-      tags: ["High Value", "VIP"],
-    },
-    {
-      id: 2,
-      leadName: "John Enterprises",
-      leadSource: "Referral",
-      agent: {
-        agentId: "456abc",
-        agentName: "Agent B",
-      },
-      leadStatus: "Contacted",
-      timeToClose: 21,
-      priority: "Medium",
-      tags: ["Urgent"],
-    },
-    {
-      id: 3,
-      leadName: "BlueSky Solutions",
-      leadSource: "Cold Call",
-      agent: {
-        agentId: "789abc",
-        agentName: "Agent C",
-      },
-      leadStatus: "Qualified",
-      timeToClose: 30,
-      priority: "High",
-      tags: ["High Value"],
-    },
-    {
-      id: 4,
-      leadName: "Nova Retail Group",
-      leadSource: "Website",
-      agent: {
-        agentId: "101efg",
-        agentName: "Agent A",
-      },
-      leadStatus: "Proposal Sent",
-      timeToClose: 10,
-      priority: "High",
-      tags: ["VIP", "Urgent"],
-    },
-    {
-      id: 5,
-      leadName: "GreenField Logistics",
-      leadSource: "Referral",
-      agent: {
-        agentId: "456abc",
-        agentName: "Agent B",
-      },
-      leadStatus: "Closed",
-      timeToClose: 5,
-      priority: "Low",
-      tags: [],
-    },
-  ];
-
+  // --- STATE ---
   const [lead, setLead] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
 
+  // Comments State
+  const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState([]);
+
+  // --- EFFECT: LOAD DATA ---
   useEffect(() => {
-    // API fetch
-    const foundLead = fakeLeads.find((l) => l.id === Number(leadId));
-    setLead(foundLead);
-    setFormData(foundLead);
+    const foundLead = initialFakeLeads.find((l) => l._id === leadId);
+    if (foundLead) {
+      setLead(foundLead);
+      setFormData(foundLead);
+      setComments(foundLead.comments || []);
+    }
   }, [leadId]);
 
   // --- HANDLERS ---
@@ -132,7 +71,11 @@ export default function LeadDetails() {
   };
 
   const saveChanges = () => {
-    setLead(formData);
+    setLead((prev) => ({
+      ...prev,
+      ...formData,
+      comments: comments,
+    }));
     setIsEditing(false);
   };
 
@@ -141,42 +84,123 @@ export default function LeadDetails() {
     setIsEditing(false);
   };
 
-  // --- PIPELINE HELPER ---
-  const getCurrentStepIndex = (status) => {
-    return PIPELINE_STEPS.indexOf(status);
+  // --- COMMENT HANDLERS ---
+  const handlePostComment = (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
+    const newEntry = {
+      _id: Date.now().toString(),
+      author: lead.agent.agentName,
+      text: newComment,
+      timestamp: new Date().toISOString(),
+      isSystem: false,
+    };
+
+    const updatedComments = [newEntry, ...comments];
+    setComments(updatedComments);
+
+    setLead((prev) => ({ ...prev, comments: updatedComments }));
+
+    setNewComment("");
   };
 
-  if (!lead) return <div className="loading-state">No lead found</div>;
+  const handleDeleteComment = (commentId) => {
+    const updatedComments = comments.filter((c) => c._id !== commentId);
+    setComments(updatedComments);
+    setLead((prev) => ({ ...prev, comments: updatedComments }));
+  };
 
-  const currentStep = getCurrentStepIndex(formData.leadStatus);
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handlePostComment(e);
+    }
+  };
+
+  // --- UTILS ---
+  const getInitials = (author, isSystem) => {
+    if (isSystem) return "SYS";
+    if (!author) return "?";
+    return author
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const formatTimestamp = (isoString) => {
+   
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return isoString; 
+
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  };
+
+  const getCurrentStepIndex = (status) => PIPELINE_STEPS.indexOf(status);
+
+  const getStepIcon = (step) => {
+    switch (step) {
+      case "New":
+        return <Zap size={14} />;
+      case "Contacted":
+        return <Phone size={14} />;
+      case "Qualified":
+        return <User size={14} />;
+      case "Proposal Sent":
+        return <FileText size={14} />;
+      case "Closed":
+        return <Inbox size={14} />;
+      default:
+        return <Check size={14} />;
+    }
+  };
+
+  if (!lead)
+    return (
+      <div className="lead-details-container loading-state">
+        Loading Lead...
+      </div>
+    );
+
+  const currentStep = getCurrentStepIndex(
+    formData?.leadStatus || lead.leadStatus,
+  );
 
   return (
     <div className="lead-details-wrapper">
       <div className="bg-pattern"></div>
 
       <main className="lead-details-container pageLoadAnimation">
+        {/* HEADER */}
         <header className="page-header">
           <div className="breadcrumbs">
             <NavLink to={"/leads"} className="crumb-text">
               Leads
             </NavLink>
             <ChevronRight size={14} />
-            <span className="crumb-active">Lead #{lead.id}</span>
+            <span className="crumb-active">Details</span>
           </div>
           <div className="header-content">
             <NavLink to="/leads" className="back-btn">
               <ArrowLeft size={20} />
             </NavLink>
-            <div>
+            <div className="header-text-group">
               <h1 className="page-title">Lead Overview</h1>
-              <p className="page-subtitle">
-                Manage deal progress and contact details
-              </p>
+              <div className="lead-id-badge">ID: #{lead._id}</div>
             </div>
           </div>
         </header>
 
+        {/* DETAILS CARD */}
         <div className="details-card">
+          {/* Identity Section */}
           <div className="card-top-section">
             <div className="identity-wrapper">
               <div className="avatar-large">{lead.leadName.charAt(0)}</div>
@@ -187,6 +211,7 @@ export default function LeadDetails() {
                     name="leadName"
                     value={formData.leadName}
                     onChange={handleInputChange}
+                    autoFocus
                   />
                 ) : (
                   <h2 className="lead-name">{lead.leadName}</h2>
@@ -196,7 +221,9 @@ export default function LeadDetails() {
                     <Globe size={13} /> {formData.leadSource}
                   </span>
                   <span className="meta-dot">•</span>
-                  <span className="meta-item">ID: {lead.id}</span>
+                  <span className="meta-item">
+                    Created {formatTimestamp(lead.createdAt)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -208,7 +235,7 @@ export default function LeadDetails() {
                     Cancel
                   </button>
                   <button className="btn-solid" onClick={saveChanges}>
-                    <Save size={16} /> Save
+                    <Save size={16} /> Save Changes
                   </button>
                 </>
               ) : (
@@ -216,32 +243,46 @@ export default function LeadDetails() {
                   className="btn-outline"
                   onClick={() => setIsEditing(true)}
                 >
-                  <Edit2 size={16} /> Edit Details
+                  <Edit2 size={15} /> Edit
                 </button>
               )}
             </div>
           </div>
 
-          {/* PIPELINE PROGRESS */}
+          {/* Pipeline */}
           <div className="pipeline-section">
-            <h3 className="section-label">Pipeline Progress</h3>
-            <div className="pipeline-track">
-              {PIPELINE_STEPS.map((step, index) => {
-                const isCompleted = index < currentStep;
-                const isCurrent = index === currentStep;
+            <div className="section-header">
+              <h3 className="section-label">Pipeline Progress</h3>
+              <span className="pipeline-percent">
+                {Math.round(((currentStep + 1) / PIPELINE_STEPS.length) * 100)}%
+              </span>
+            </div>
 
+            <div className="pipeline-track">
+              <div className="track-line-bg"></div>
+              <div
+                className="track-line-fill"
+                style={{
+                  width: `${(currentStep / (PIPELINE_STEPS.length - 1)) * 100}%`,
+                }}
+              ></div>
+
+              {PIPELINE_STEPS.map((step, index) => {
+                const isCompleted = index <= currentStep;
+                const isCurrent = index === currentStep;
                 return (
                   <div
                     key={step}
                     className={`pipeline-step ${isCompleted ? "completed" : ""} ${isCurrent ? "current" : ""}`}
                   >
                     <div className="step-circle">
-                      {isCompleted ? <Check size={14} /> : index + 1}
+                      {index < currentStep ? (
+                        <Check size={14} strokeWidth={3} />
+                      ) : (
+                        getStepIcon(step)
+                      )}
                     </div>
                     <span className="step-label">{step}</span>
-                    {index !== PIPELINE_STEPS.length - 1 && (
-                      <div className="step-line" />
-                    )}
                   </div>
                 );
               })}
@@ -249,7 +290,7 @@ export default function LeadDetails() {
 
             {isEditing && (
               <div className="status-editor">
-                <label>Update Stage manually:</label>
+                <label>Manual Stage Override:</label>
                 <select
                   className="edit-select"
                   name="leadStatus"
@@ -268,15 +309,17 @@ export default function LeadDetails() {
 
           <hr className="divider" />
 
+          {/* Grid Details */}
           <div className="card-body">
             <div className="grid-layout">
+              {/* Column 1 */}
               <div className="grid-column">
                 <h4 className="column-header">
-                  <Briefcase size={16} /> Deal Information
+                  <Briefcase size={16} /> Deal Info
                 </h4>
 
                 <div className="field-group">
-                  <label>Priority</label>
+                  <label>Priority Level</label>
                   {isEditing ? (
                     <select
                       className="edit-select"
@@ -292,14 +335,13 @@ export default function LeadDetails() {
                     <span
                       className={`badge-priority ${lead.priority.toLowerCase()}`}
                     >
-                      {/* **** FIX ICON **** */}
                       {lead.priority}
                     </span>
                   )}
                 </div>
 
                 <div className="field-group">
-                  <label>Est. Close Time</label>
+                  <label>Est. Days to Close</label>
                   {isEditing ? (
                     <input
                       type="number"
@@ -311,19 +353,20 @@ export default function LeadDetails() {
                   ) : (
                     <div className="value-txt">
                       <Clock size={14} className="txt-icon" />{" "}
-                      {lead.timeToClose} {lead.timeToClose > 1 ? "Days" : "Day"}
+                      {lead.timeToClose} Days
                     </div>
                   )}
                 </div>
               </div>
 
+              {/* Column 2 */}
               <div className="grid-column">
                 <h4 className="column-header">
                   <User size={16} /> Assignment
                 </h4>
 
                 <div className="field-group">
-                  <label>Assigned Agent</label>
+                  <label>Sales Agent</label>
                   {isEditing ? (
                     <select
                       className="edit-select"
@@ -333,19 +376,20 @@ export default function LeadDetails() {
                       <option>Agent A</option>
                       <option>Agent B</option>
                       <option>Agent C</option>
+                      <option>Sarah Jenkins</option>
+                      <option>Marcus Sterling</option>
                     </select>
                   ) : (
                     <div className="agent-display">
                       <div className="agent-avatar-sm">
-                        {lead.agent.agentName.charAt(0)}
+                        {getInitials(lead.agent.agentName, false)}
                       </div>
                       <div className="agent-details-txt">
                         <span className="agent-name-label">
                           {lead.agent.agentName}
                         </span>
-                        {/* **** FIX AG ID **** */}
                         <span className="agent-id-label">
-                          ID: {lead.agent.agentId}
+                          {lead.agent.agentId}
                         </span>
                       </div>
                     </div>
@@ -359,12 +403,10 @@ export default function LeadDetails() {
                       className="edit-input"
                       value={formData.tags.join(", ")}
                       onChange={handleTagsChange}
+                      placeholder="e.g. VIP, Urgent"
                     />
                   ) : (
                     <div className="tags-list">
-                      {lead.tags.length === 0 && (
-                        <span>No Tags available, Add by using comma</span>
-                      )}
                       {lead.tags.map((t) => (
                         <span key={t} className="tag-pill">
                           #{t}
@@ -377,6 +419,97 @@ export default function LeadDetails() {
             </div>
           </div>
         </div>
+
+        {/* ACTIVITY & COMMENTS */}
+        <section className="comments-section">
+          <div className="comments-header">
+            <h3>
+              <History size={18} /> Activity Timeline
+            </h3>
+            <span className="comment-count">{comments.length}</span>
+          </div>
+
+          <div className="comments-card">
+            <div className="comment-input-area">
+              <form onSubmit={handlePostComment}>
+                <textarea
+                  placeholder="Log a call, note, or update..."
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  rows={2}
+                  onKeyDown={handleKeyDown}
+                />
+                <div className="comment-actions">
+                  <span className="hint-text">
+                    <strong>Enter</strong> to post
+                  </span>
+                  <button
+                    type="submit"
+                    className="btn-solid btn-sm"
+                    disabled={!newComment.trim()}
+                  >
+                    <Send size={14} /> Post
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div className="comments-feed">
+              {comments.length > 0 ? (
+                comments.map((comment) => (
+                  <div
+                    key={comment._id}
+                    className={`comment-item ${comment.isSystem ? "system-log" : ""}`}
+                  >
+                    {/* The Connector Line */}
+                    <div className="timeline-connector"></div>
+
+                    <div className="comment-avatar">
+                      {comment.isSystem ? (
+                        <Zap size={14} />
+                      ) : (
+                        getInitials(comment.author, comment.isSystem)
+                      )}
+                    </div>
+
+                    <div className="comment-content">
+                      <div className="comment-header-row">
+                        <span className="comment-author">
+                          {comment.isSystem ? "System" : comment.author}
+                          {!comment.isSystem &&
+                            comment.author === lead.agent.agentName && (
+                              <span className="assignee-badge">You</span>
+                            )}
+                        </span>
+                        <span className="comment-time">
+                          {formatTimestamp(comment.timestamp)}
+                        </span>
+                      </div>
+
+                      <p className="comment-text">{comment.text}</p>
+
+                      {!comment.isSystem && (
+                        <div className="comment-footer-actions">
+                          <button
+                            onClick={() => handleDeleteComment(comment._id)}
+                            className="action-link delete"
+                          >
+                            <Trash2 size={12} /> Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="empty-feed">
+                  <MessageSquare size={32} />
+                  <p>No activity recorded yet.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );

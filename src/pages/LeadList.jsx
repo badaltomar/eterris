@@ -17,74 +17,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import "../components/common/LeadList.css";
-
-const fakeLeads = [
-  {
-    id: 1,
-    leadName: "Acme Corp International Holdings",
-    leadSource: "Website",
-    agent: {
-      agentId: "123abc",
-      agentName: "Agent A"
-    },
-    leadStatus: "New",
-    timeToClose: 14,
-    priority: "High",
-    tags: ["High Value", "VIP"],
-  },
-  {
-    id: 2,
-    leadName: "John Enterprises",
-    leadSource: "Referral",
-    agent: {
-      agentId: "456abc",
-      agentName: "Agent B"
-    },
-    leadStatus: "Contacted",
-    timeToClose: 21,
-    priority: "Medium",
-    tags: ["Urgent"],
-  },
-  {
-    id: 3,
-    leadName: "BlueSky Solutions",
-    leadSource: "Cold Call",
-    agent: {
-      agentId: "789abc",
-      agentName: "Agent C"
-    },
-    leadStatus: "Qualified",
-    timeToClose: 30,
-    priority: "High",
-    tags: ["High Value"],
-  },
-  {
-    id: 4,
-    leadName: "Nova Retail Group",
-    leadSource: "Website",
-    agent: {
-      agentId: "101efg",
-      agentName: "Agent A"
-    },
-    leadStatus: "Proposal Sent",
-    timeToClose: 10,
-    priority: "High",
-    tags: ["VIP", "Urgent"],
-  },
-  {
-    id: 5,
-    leadName: "GreenField Logistics",
-    leadSource: "Referral",
-    agent: {
-      agentId: "456abc",
-      agentName: "Agent B"
-    },
-    leadStatus: "Closed",
-    timeToClose: 5,
-    priority: "Low",
-    tags: [],
-  },
-];
+import fakeLeads from "/leads.json"
 
 const getStatusIcon = (status) => {
   switch (status) {
@@ -269,7 +202,7 @@ export default function LeadList() {
       <section className="lead-list">
         {filteredLeads.length > 0 ? (
           filteredLeads.map((lead, i) => (
-            <NavLink to={`/leads/${lead.id}`} key={lead.id} className="lead-row">
+            <NavLink to={`/leads/${lead._id}`} key={lead._id} className="lead-row">
               {/* MOBILE HEADER: WRAPS NAME & STATUS */}
               <div className="mobile-card-header">
                 {/* Column 1: Name */}
@@ -319,7 +252,7 @@ export default function LeadList() {
 
               {/* Column 6: Tags */}
               <div className="tag-list">
-                {lead.tags.map((t) => (
+                {lead.tags?.map((t) => (
                   <span
                     key={t}
                     className={`tag-chip tag-${t.replace(/\s+/g, "").toLowerCase()}`}

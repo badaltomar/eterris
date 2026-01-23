@@ -1,0 +1,136 @@
+[
+  {
+    "_id": "65af8b2c1d4e5f0012345671",
+    "leadName": "Acme Corp International Holdings",
+    "leadSource": "Website",
+    "leadStatus": "New",
+    "priority": "High",
+    "timeToClose": 14,
+    "agent": {
+      "agentId": "SDR-9921",
+      "agentName": "Marcus Sterling"
+    },
+    "tags": ["High Value", "VIP"],
+    "comments": [
+      {
+        "_id": "65af9c112d3a",
+        "author": "Marcus Sterling",
+        "text": "Initial inquiry received via enterprise contact form.",
+        "timestamp": "2026-01-22T10:30:00Z",
+        "isSystem": false
+      }
+    ],
+    "createdAt": "2026-01-22T10:00:00Z",
+    "updatedAt": "2026-01-22T10:30:00Z"
+  },
+  {
+    "_id": "65af8b2c1d4e5f0012345672",
+    "leadName": "John Enterprises",
+    "leadSource": "Referral",
+    "leadStatus": "Contacted",
+    "priority": "Medium",
+    "timeToClose": 21,
+    "agent": {
+      "agentId": "ACC-4410",
+      "agentName": "Sarah Jenkins"
+    },
+    "tags": ["Urgent"],
+    "comments": [
+      {
+        "_id": "65af9c112d3b",
+        "author": "System",
+        "text": "Lead status changed from 'New' to 'Contacted'.",
+        "timestamp": "2026-01-23T09:15:00Z",
+        "isSystem": true
+      },
+      {
+        "_id": "65af9c112d3c",
+        "author": "Sarah Jenkins",
+        "text": "Spoke with the procurement manager. They need a quote by Friday.",
+        "timestamp": "2026-01-23T09:45:00Z",
+        "isSystem": false
+      }
+    ],
+    "createdAt": "2026-01-21T08:00:00Z",
+    "updatedAt": "2026-01-23T09:45:00Z"
+  },
+  {
+    "_id": "65af8b2c1d4e5f0012345673",
+    "leadName": "BlueSky Solutions",
+    "leadSource": "Cold Call",
+    "leadStatus": "Qualified",
+    "priority": "High",
+    "timeToClose": 30,
+    "agent": {
+      "agentId": "EXEC-2105",
+      "agentName": "David Chen"
+    },
+    "tags": ["High Value", "Tech"],
+    "comments": [
+      {
+        "_id": "65af9c112d3d",
+        "author": "David Chen",
+        "text": "Confirmed they have the budget and authority to purchase.",
+        "timestamp": "2026-01-20T11:20:00Z",
+        "isSystem": false
+      }
+    ],
+    "createdAt": "2026-01-15T14:00:00Z",
+    "updatedAt": "2026-01-20T11:20:00Z"
+  },
+  {
+    "_id": "65af8b2c1d4e5f0012345674",
+    "leadName": "Nova Retail Group",
+    "leadSource": "Website",
+    "leadStatus": "Proposal Sent",
+    "priority": "High",
+    "timeToClose": 10,
+    "agent": {
+      "agentId": "SDR-9921",
+      "agentName": "Marcus Sterling"
+    },
+    "tags": ["VIP", "Urgent"],
+    "comments": [
+      {
+        "_id": "65af9c112d3e",
+        "author": "Marcus Sterling",
+        "text": "Proposal deck sent via email. Follow up scheduled for Monday.",
+        "timestamp": "2026-01-23T16:00:00Z",
+        "isSystem": false
+      }
+    ],
+    "createdAt": "2026-01-19T10:30:00Z",
+    "updatedAt": "2026-01-23T16:00:00Z"
+  },
+  {
+    "_id": "65af8b2c1d4e5f0012345675",
+    "leadName": "GreenField Logistics",
+    "leadSource": "Referral",
+    "leadStatus": "Closed",
+    "priority": "Low",
+    "timeToClose": 5,
+    "agent": {
+      "agentId": "ACC-4410",
+      "agentName": "Sarah Jenkins"
+    },
+    "tags": ["Legacy"],
+    "comments": [
+      {
+        "_id": "65af9c112d3f",
+        "author": "System",
+        "text": "Lead status changed to 'Closed'.",
+        "timestamp": "2026-01-20T12:00:00Z",
+        "isSystem": true
+      },
+      {
+        "_id": "65af9c112d40",
+        "author": "Sarah Jenkins",
+        "text": "Contract signed and archived.",
+        "timestamp": "2026-01-20T12:05:00Z",
+        "isSystem": false
+      }
+    ],
+    "createdAt": "2026-01-10T09:00:00Z",
+    "updatedAt": "2026-01-20T12:05:00Z"
+  }
+]
