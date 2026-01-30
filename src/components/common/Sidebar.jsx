@@ -17,10 +17,12 @@ export default function Sidebar() {
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/" },
     { name: "Leads", icon: Users, path: "/leads" },
-    { name: "Sales", icon: Briefcase, path: "/a" },
+    { name: "By Status", icon: Users, path: "/leads/status" },
+    { name: "By Agent", icon: Users, path: "/leads/agents" },
+    { name: "Sales", icon: Briefcase, path: "/sales" },
     { name: "Agents", icon: UserCog, path: "/agents" },
-    { name: "Reports", icon: BarChart3, path: "/a" },
-    { name: "Settings", icon: Settings, path: "/a" },
+    { name: "Reports", icon: BarChart3, path: "/reports" },
+    { name: "Settings", icon: Settings, path: "/settings" },
   ];
 
   return (

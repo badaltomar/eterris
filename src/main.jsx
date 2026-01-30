@@ -7,8 +7,12 @@
   import AddNewLead from './pages/AddNewLead.jsx'
   import AddNewAgent from './pages/AddNewAgent.jsx'
   import LeadList from './pages/LeadList.jsx'
+  import LeadsByStatus from './pages/LeadsByStatus.jsx'
+  import LeadsByAgent from './pages/LeadsByAgent.jsx'
   import LeadDetails from './pages/LeadDetails.jsx'
   import AgentList from './pages/AgentList.jsx'
+  import Sales from './pages/Sales.jsx'
+  import Reports from './pages/Reports.jsx'
 
   import { Flip, ToastContainer } from 'react-toastify'
   import 'react-toastify/dist/ReactToastify.css'
@@ -38,8 +42,24 @@
           element: <LeadList />
         },
         {
+          path: "/leads/status",
+          element: <LeadsByStatus />
+        },
+        {
+          path: "/leads/agents",
+          element: <LeadsByAgent />
+        },
+        {
           path: "/leads/:leadId",
           element: <LeadDetails />
+        },
+        {
+          path: "/sales",
+          element: <Sales />
+        },
+        {
+          path: "/reports",
+          element: <Reports />
         },
       ]
     }

@@ -22,6 +22,7 @@ import {
 import "../components/common/LeadDetails.css";
 import initialFakeLeads from "/leads.json";
 import ActivitySuggestions from "../components/common/ActivitySuggestions";
+// import { normalizeLeadOnSave } from "../utils/leadHelpers";
 
 const PIPELINE_STEPS = [
   "New",
@@ -172,6 +173,17 @@ export default function LeadDetails() {
   const currentStep = getCurrentStepIndex(
     formData?.leadStatus || lead.leadStatus,
   );
+
+//   const handleSave = () => {
+//   const updated = normalizeLeadOnSave(formData);
+
+//   setLead(updated);
+//   setFormData(updated);
+
+//   // later: POST/PUT to backend
+// };
+
+
 
   return (
     <div className="lead-details-wrapper">

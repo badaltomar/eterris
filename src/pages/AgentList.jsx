@@ -1,13 +1,22 @@
 import { NavLink } from "react-router-dom";
 import "../components/common/AgentList.css";
 import { ArrowLeft } from "lucide-react";
+import fakeLeads from "/leads.json"
 
 export default function AgentList() {
-  const AGENTS = [
-    { name: "John Doe", email: "john.doe@email.com" },
-    { name: "Jane Smith", email: "jane.smith@email.com" },
-    { name: "Alex Brown", email: "alex.brown@email.com" },
-  ];
+
+ const uniqueAgents = Object.values(
+  fakeLeads.reduce((acc, lead) => {
+    const agent = lead.agent;
+    if (agent && agent.agentId) {
+      acc[agent.agentId] = {
+        agentId: agent.agentId,
+        agentName: agent.agentName
+      };
+    }
+    return acc;
+  }, {})
+);
 
   return (
     <main className="agent-page pageLoadAnimation">
@@ -22,11 +31,12 @@ export default function AgentList() {
 
       {/* AGENT LIST */}
       <section className="agent-list">
-        {AGENTS.map((agent, i) => (
-          <div key={i} className="agent-card">
+        {uniqueAgents.map((agent) => (
+          <div key={agent.agentId} className="agent-card">
             <div className="agent-info">
-              <h4>{agent.name}</h4>
-              <p>{agent.email}</p>
+              <h4>{agent.agentName}</h4>
+              <p>{agent.agentId}</p>
+              {/* <p>{agent.agentEmail}</p> adding later...*/}
             </div>
           </div>
         ))}
