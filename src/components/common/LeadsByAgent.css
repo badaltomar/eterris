@@ -146,7 +146,7 @@
   text-decoration: none; overflow: hidden; transition: all 0.15s; position: relative;
   flex-shrink: 0;
 }
-.lba-tile:hover { border-color: #93c5fd; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.04); }
+.lba-tile:hover { border-color: #e5e7eb; transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
 
 .lba-tile-stripe { width: 4px; flex-shrink: 0; }
 .lba-tile-stripe.high { background: #ef4444; }

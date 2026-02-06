@@ -1,11 +1,11 @@
 [
   {
-    "_id": "65af8b2c1d4e5f0012345671",
-    "leadName": "Acme Corp International Holdings",
+    "_id": "65af8b2c1d4e5f0012347891",
+    "leadName": "Grow Corp International",
     "leadSource": "Website",
     "leadStatus": "New",
     "priority": "High",
-    "timeToClose": 14,
+    "timeToClose": 19,
     "agent": {
       "agentId": "SDR-9921",
       "agentName": "Marcus Sterling"
@@ -79,7 +79,7 @@
     "updatedAt": "2026-01-23T09:45:00Z"
   },
   {
-    "_id": "65af8b2c1d4e5f0012345673",
+    "_id": "65af8b2c1d4e5f0012345773",
     "leadName": "Pink Hut Pvt Ltd",
     "leadSource": "Cold Call",
     "leadStatus": "Qualified",

@@ -5,7 +5,7 @@
     "leadSource": "Website",
     "leadStatus": "Closed",
     "isClosed": true,
-    "closedAt": "2026-01-20T12:05:00Z",
+    "closedAt": "2026-02-02T12:05:00Z",
     "closedBy": "Sarah Jenkins",
     "priority": "High",
     "timeToClose": 10,
@@ -20,8 +20,8 @@
     "dealValue": 25000,
     "industry": "Technology",
     "comments": [],
-    "createdAt": "2026-01-10T09:00:00Z",
-    "updatedAt": "2026-01-20T12:05:00Z"
+    "createdAt": "2026-02-02T09:00:00Z",
+    "updatedAt": "2026-02-02T12:05:00Z"
   },
   {
     "_id": "L-1002",
@@ -169,7 +169,7 @@
     "leadSource": "Cold Email",
     "leadStatus": "Closed",
     "isClosed": true,
-    "closedAt": "2026-01-22T16:30:00Z",
+    "closedAt": "2025-07-09T16:30:00Z",
     "closedBy": "Sarah Jenkins",
     "priority": "Medium",
     "timeToClose": 40,
@@ -180,10 +180,10 @@
     "tags": [
       "Manufacturing"
     ],
-    "dealValue": 15000,
+    "dealValue": 38500,
     "industry": "Manufacturing",
     "comments": [],
-    "createdAt": "2025-12-01T09:00:00Z",
+    "createdAt": "2025-07-01T09:00:00Z",
     "updatedAt": "2026-01-22T16:30:00Z"
   },
   {
@@ -256,7 +256,7 @@
     "updatedAt": "2026-01-22T16:30:00Z"
   },
   {
-    "_id": "L-1007",
+    "_id": "L-7007",
     "leadName": "City Grocers",
     "leadSource": "Website",
     "leadStatus": "Contacted",

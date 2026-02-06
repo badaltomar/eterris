@@ -1,60 +1,136 @@
-/* PAGE */
+/* Layout & Reset */
 .agent-page {
-  padding: 24px;
+  padding: 24px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* HEADER */
+/* Header */
 .agent-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+}
+.agent-header h2 { margin: 0 0 4px; font-size: 24px; color: #111827; }
+.subtitle { color: #6b7280; font-size: 14px; margin: 0; }
+
+/* Grid Layout */
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
-/* AGENT LIST */
-.agent-list {
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-  overflow: hidden;
-}
-
-/* AGENT CARD */
+/* Agent Card Design */
 .agent-card {
-  padding: 16px 20px;
-  border-bottom: 1px solid #e5e7eb;
-  transition: background 0.15s ease;
-}
-
-.agent-card:last-child {
-  border-bottom: none;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px 20px; /* Increased top/bottom padding for balance */
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
 }
 
 .agent-card:hover {
-  background: #f9fafb;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  border-color: #d1d5db;
 }
 
-/* AGENT INFO */
-.agent-info h4 {
-  margin-bottom: 4px;
-  color: #111827;
+/* Profile Section */
+.agent-profile {
+  display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 24px;
 }
 
-.agent-info p {
-  color: #6b7280;
+.agent-avatar {
+  width: 64px; height: 64px;
+  background: #eef2ff; color: #4f46e5;
+  border-radius: 50%;
+  font-size: 24px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px;
 }
 
-/* BACK LINK */
-.back-link {
-  margin-top: 20px;
+.agent-profile h3 { margin: 0 0 4px; font-size: 16px; color: #1f2937; }
+.agent-role { font-size: 12px; color: #6b7280; font-weight: 500; }
+.agent-id { 
+  font-size: 11px; color: #9ca3af; margin-top: 6px; 
+  background: #f9fafb; padding: 2px 8px; border-radius: 12px; 
+  border: 1px solid #f3f4f6; letter-spacing: 0.03em;
 }
 
-.back-link a {
-  font-size: 14px;
-  font-weight: 500;
+/* Stats Row */
+.agent-stats {
+  display: flex; justify-content: space-around; /* Better spacing for 3 items */
+  padding: 16px 0; 
+  border-top: 1px solid #f3f4f6; 
+  margin-bottom: 20px;
+}
+.stat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.stat-val { font-size: 16px; font-weight: 700; color: #111827; line-height: 1; }
+.stat-label { font-size: 10px; color: #6b7280; text-transform: uppercase; font-weight: 600; letter-spacing: 0.02em; }
+.text-gray { color: #9ca3af; }
+.text-blue { color: #4f46e5; }
+
+/* Actions */
+.card-actions { margin-top: auto; } /* Pushes button to bottom */
+
+.action-btn {
+  width: 100%; /* Full Width */
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  text-decoration: none; transition: 0.2s;
+  cursor: pointer;
+}
+
+.action-btn.primary-outline {
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  background: white;
+}
+.action-btn.primary-outline:hover {
+  border-color: #4f46e5;
   color: #4f46e5;
+  background: #eef2ff;
 }
 
-.back-link a:hover {
-  color: #3832a2;
+/* Add New Card Variant */
+.agent-card.add-new {
+  border: 2px dashed #e5e7eb;
+  align-items: center; justify-content: center;
+  color: #6b7280; cursor: pointer; background: #f9fafb;
+  text-decoration: none; min-height: 300px; /* Match height of other cards */
+}
+.agent-card.add-new:hover { border-color: #4f46e5; color: #4f46e5; background: #eef2ff; }
+.add-icon {
+  width: 40px; height: 40px; border-radius: 50%; background: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; color: inherit; margin-bottom: 12px; border: 1px solid currentColor;
+}
+
+/* In AgentList.css */
+.team-stats-pill {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 6px 16px;
+  border-radius: 20px;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+.pill-item { display: flex; align-items: center; gap: 6px; }
+.divider { width: 1px; height: 16px; background: #e5e7eb; }
+.text-orange { color: #f59e0b; }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .agent-grid { grid-template-columns: 1fr; }
+  .agent-header { flex-direction: column; align-items: flex-start; gap: 16px; }
 }

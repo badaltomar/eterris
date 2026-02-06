@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { NavLink, useSearchParams } from "react-router-dom";
 import {
   Filter,
   ArrowLeft,
@@ -17,7 +17,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import "../components/common/LeadList.css";
-import fakeLeads from "/leads.json"
+import fakeLeads from "/leads.json";
 
 const getStatusIcon = (status) => {
   switch (status) {
@@ -37,51 +37,80 @@ const getStatusIcon = (status) => {
 };
 
 export default function LeadList() {
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [agentFilter, setAgentFilter] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentAgent = searchParams.get("salesAgent") || "";
+  const currentStatus = searchParams.get("status") || "";
+  const currentSearch = searchParams.get("q") || "";
+  const currentSort = searchParams.get("sort") || "";
 
-  // MERGED SORT STATE
-  const [sortOption, setSortOption] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
+  // Function to update a specific filter while keeping others
+  const updateFilter = (key, value) => {
+    const newParams = new URLSearchParams(searchParams);
+
+    if (value && value !== "All") {
+      newParams.set(key, value);
+    } else {
+      newParams.delete(key); // Remove param to keep URL clean
+    }
+
+    setSearchParams(newParams);
+  };
+
+  const isAnyFilterActive = currentAgent || currentStatus || currentSearch || currentSort;
+  const [showFilters, setShowFilters] = useState(isAnyFilterActive);
 
   const priorityOrder = { Low: 1, Medium: 2, High: 3 };
 
-  const isAnyFilterActive = statusFilter || agentFilter || sortOption || search;
+  const allAgents = [...new Set(fakeLeads.map((l) => l.agent.agentName))];
+  const allStatuses = [
+    "New",
+    "Contacted",
+    "Qualified",
+    "Proposal Sent",
+    "Closed",
+  ];
 
-  const filteredLeads = fakeLeads
-    .filter((lead) => {
-      const matchesSearch =
-        lead.leadName.toLowerCase().includes(search.toLowerCase()) ||
-        lead.leadSource.toLowerCase().includes(search.toLowerCase());
+  // FILTER LOGIC (Uses URL params instead of State)
+  const filteredLeads = useMemo(() => {
+    return fakeLeads
+      .filter((lead) => {
+        // Search Filter
+        if (currentSearch) {
+          const lowerQ = currentSearch.toLowerCase();
+          const matches =
+            lead.leadName.toLowerCase().includes(lowerQ) ||
+            lead.leadSource.toLowerCase().includes(lowerQ);
+          if (!matches) return false;
+        }
 
-      const matchesStatus = !statusFilter || lead.leadStatus === statusFilter;
-      const matchesAgent = !agentFilter || lead.agent.agentName === agentFilter;
+        // Agent Filter
+        if (currentAgent && lead.agent.agentName !== currentAgent) {
+          return false;
+        }
 
-      return matchesSearch && matchesStatus && matchesAgent;
-    })
-    .sort((a, b) => {
-      // SINGLE SORT LOGIC
-      switch (sortOption) {
-        case "priority-desc": // High to Low
+        // Status Filter
+        if (currentStatus && lead.leadStatus !== currentStatus) {
+          return false;
+        }
+
+        return true;
+      })
+      .sort((a, b) => {
+        if (currentSort === "priority-desc") {
           return priorityOrder[b.priority] - priorityOrder[a.priority];
-        case "priority-asc": // Low to High
+        }
+        if (currentSort === "priority-asc") {
           return priorityOrder[a.priority] - priorityOrder[b.priority];
-        case "time-asc": // Sooner First
-          return a.timeToClose - b.timeToClose;
-        case "time-desc": // Later First
-          return b.timeToClose - a.timeToClose;
-        default:
-          return 0; // No sort
-      }
-    });
+        }
+        if (currentSort === "time-asc") return a.timeToClose - b.timeToClose;
+        if (currentSort === "time-desc") return b.timeToClose - a.timeToClose;
 
-  // The Reset Function
+        return 0;
+      });
+  }, [currentAgent, currentStatus, currentSearch, currentSort]);
+
   const clearAllFilters = () => {
-    setSearch("");
-    setStatusFilter("");
-    setAgentFilter("");
-    setSortOption("");
+    setSearchParams({});
   };
 
   return (
@@ -108,11 +137,11 @@ export default function LeadList() {
           <input
             type="text"
             placeholder="Search leads, company, or source..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={currentSearch}
+            onChange={(e) => updateFilter("q", e.target.value)}
           />
-          {search && (
-            <button className="clear-btn" onClick={() => setSearch("")}>
+          {currentSearch && (
+            <button className="clear-btn" onClick={() => updateFilter("q", "")}>
               <X size={14} />
             </button>
           )}
@@ -127,8 +156,8 @@ export default function LeadList() {
         </button>
 
         {isAnyFilterActive && (
-          <button 
-            className="btn-reset" 
+          <button
+            className="btn-reset"
             onClick={clearAllFilters}
             title="Clear all active filters"
           >
@@ -144,28 +173,30 @@ export default function LeadList() {
           <div className="select-group">
             <label>Status</label>
             <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              value={currentStatus}
+              onChange={(e) => updateFilter("status", e.target.value)} // Write to URL
             >
               <option value="">All Statuses</option>
-              <option value={"New"}>New</option>
-              <option value={"Contacted"}>Contacted</option>
-              <option value={"Qualified"}>Qualified</option>
-              <option value={"Proposal Sent"}>Proposal Sent</option>
-              <option value={"Closed"}>Closed</option>
+              {allStatuses.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
             </select>
           </div>
 
           <div className="select-group">
             <label>Agent</label>
             <select
-              value={agentFilter}
-              onChange={(e) => setAgentFilter(e.target.value)}
+              value={currentAgent}
+              onChange={(e) => updateFilter("salesAgent", e.target.value)}
             >
               <option value="">All Agents</option>
-              <option value={"Agent A"}>Agent A</option>
-              <option value={"Agent B"}>Agent B</option>
-              <option value={"Agent C"}>Agent C</option>
+              {allAgents.map((agent) => (
+                <option key={agent} value={agent}>
+                  {agent}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -174,8 +205,8 @@ export default function LeadList() {
             <label>Sort Order</label>
             <div className="select-with-icon">
               <select
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value)}
+                value={currentSort}
+                onChange={(e) => updateFilter("sort", e.target.value)}
               >
                 <option value="">Default (No Sort)</option>
                 <option value={"priority-desc"}>Priority: High → Low</option>
@@ -202,7 +233,11 @@ export default function LeadList() {
       <section className="lead-list">
         {filteredLeads.length > 0 ? (
           filteredLeads.map((lead, i) => (
-            <NavLink to={`/leads/${lead._id}`} key={lead._id} className="lead-row">
+            <NavLink
+              to={`/leads/${lead._id}`}
+              key={lead._id}
+              className="lead-row"
+            >
               {/* MOBILE HEADER: WRAPS NAME & STATUS */}
               <div className="mobile-card-header">
                 {/* Column 1: Name */}
@@ -270,10 +305,7 @@ export default function LeadList() {
             </div>
             <h3>No leads found</h3>
             <p>Try adjusting your search or filters.</p>
-            <button
-              className="btn secondary"
-              onClick={clearAllFilters}
-            >
+            <button className="btn secondary" onClick={clearAllFilters}>
               Clear all filters
             </button>
           </div>
