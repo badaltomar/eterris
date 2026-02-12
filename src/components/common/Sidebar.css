@@ -6,7 +6,7 @@
 
 .layout {
   display: flex;
-  min-height: 100vh;
+  min-height: 100%;
 }
 
 .sidebar {
@@ -16,6 +16,9 @@
   transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
+  height: 100vh;         
+  position: sticky;       
+  top: 0;
 }
 
 .sidebar.collapsed {
@@ -108,4 +111,3 @@
   white-space: nowrap;
   font-size: 14px;
 }
-

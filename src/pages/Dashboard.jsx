@@ -84,10 +84,15 @@ export default function Dashboard() {
     cutout: '68%',
     // ADD THIS SECTION
     animation: {
-      duration: 2000,
+      duration: 1500,
       easing: 'easeOutQuart',
-      animateRotate: true,
-      animateScale: false
+    },
+    animations: {
+      numbers: {
+      type: "number",
+      duration: 1500,
+      easing: "easeOutQuart"
+    }
     },
     plugins: {
       legend: { display: false },
@@ -117,11 +122,17 @@ export default function Dashboard() {
     indexAxis: 'y',
     animation: {
       duration: 1500,
-      easing: 'linear',
+      easing: 'easeOutQuart',
     },
+     animations: {
+    x: {
+      from: 0
+    }
+  },
     plugins: { legend: { display: false } },
     scales: { x: { display: false }, y: { grid: { display: false } } },
     maintainAspectRatio: false,
+    responsive: true
   };
 
   return (
@@ -185,9 +196,7 @@ export default function Dashboard() {
         
         {/* LEFT COLUMN (Wide) */}
         <div className="layout-main">
-          
-          Recent Leads
-          <div className="dash-card">
+                    <div className="dash-card">
             <div className="card-header">
               <h4>Recent Leads</h4>
               <NavLink to="/leads" className="link-btn">View All</NavLink>
@@ -255,7 +264,7 @@ export default function Dashboard() {
             <div className="card-header">
               <h4>Pipeline Composition</h4>
             </div>
-            <div className="doughnut-wrapper">
+            <div className="doughnut-wrapper" style={{ height: 260 /* px - adjust */ }}>
               <Doughnut data={doughnutData} options={doughnutOptions} />
               
               {/* ABSOLUTE CENTER TEXT */}

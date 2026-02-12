@@ -290,3 +290,156 @@ button,
     transform: translateY(0);
   }
 }
+
+/* -------------------------
+   Chart / Doughnut fixes
+   -------------------------*/
+.chart-card { 
+  /* ensure internal overflow doesn't push page width */
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* wrapper controls chart height and clipping */
+.doughnut-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: 260px;           /* fallback height; can override inline */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  box-sizing: border-box;
+  overflow: hidden;        /* important: clip any stray canvas pixels */
+}
+
+/* Make sure canvas never forces page width */
+.doughnut-wrapper canvas {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  box-sizing: border-box;
+}
+
+/* centered overlay labels inside doughnut */
+.doughnut-center {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  transform: translateY(-2px);
+}
+.center-num { font-size: 28px; font-weight: 700; }
+.center-lbl { font-size: 12px; color: #6b7280; text-transform: uppercase; }
+
+/* legend: allow wrapping on narrow viewports to avoid overflow */
+.chart-legend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding-top: 10px;
+  box-sizing: border-box;
+}
+
+/* legend item dot */
+.chart-legend .dot {
+  display:inline-block;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  margin-right:8px;
+  vertical-align:middle;
+}
+
+/* ============================= */
+/* MOBILE DRAWER SIDEBAR */
+/* ============================= */
+
+.sidebar-container {
+  position: relative;
+}
+/* Hide mobile topbar by default */
+.mobile-topbar {
+  display: none;
+}
+
+/* ============================= */
+/* BLUR BACKGROUND EFFECT */
+/* ============================= */
+
+.blur-active .page-content {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+  pointer-events: none;
+}
+
+.blur-active {
+  overflow: hidden;
+}
+
+
+@media (max-width: 768px) {
+  .mobile-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid #e5e7eb;
+    z-index: 1100;
+  }
+
+  .mobile-menu-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  .mobile-brand {
+    font-weight: 600;
+    margin-left: 12px;
+  }
+
+  .sidebar-container {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    height: 100%;
+    z-index: 1200;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar-container.open {
+    left: 0;
+  }
+
+  .sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.3s ease;
+  z-index: 1150;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+  .page-content {
+    margin-top: 56px;
+  }
+}

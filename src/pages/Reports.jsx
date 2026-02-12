@@ -96,6 +96,15 @@ export default function Reports() {
   const performanceOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 1500,
+      easing: "easeOutQuart",
+    },
+    animations: {
+      y: {
+        from: 0,
+      },
+    },
     plugins: {
       legend: { display: false },
     },
@@ -129,6 +138,14 @@ export default function Reports() {
   const doughnutOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 1500,
+    },
+    animations: {
+      circumference: {
+        from: 0,
+      },
+    },
     cutout: "65%",
     plugins: {
       legend: {
@@ -141,6 +158,15 @@ export default function Reports() {
   const standardBarOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 1500,
+      easing: "easeOutQuart",
+    },
+    animations: {
+      y: {
+        from: 0,
+      },
+    },
     plugins: { legend: { display: false } },
     scales: {
       y: {

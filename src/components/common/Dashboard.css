@@ -1,9 +1,12 @@
 /* --- Page Layout --- */
 .dashboard-page {
   padding: 24px 32px;
-  max-width: 1400px;
-  margin: 0 auto;
   width: 100%;
+}
+
+.layout-main,
+.layout-side {
+  min-width: 0;
 }
 
 /* --- Header --- */
@@ -99,10 +102,12 @@
 /* --- Main Layout Split --- */
 .dash-layout {
   display: grid;
-  grid-template-columns: 2.2fr 1fr; /* 70% / 30% split */
+  grid-template-columns: 1fr;
   gap: 24px;
-  align-items: start;
 }
+
+
+
 
 .layout-main, .layout-side {
   display: flex; flex-direction: column; gap: 24px;
@@ -118,12 +123,17 @@
 
 /* Table */
 .table-responsive { overflow-x: auto; }
-.dash-table { width: 100%; border-collapse: collapse; min-width: 500px; } /* Prevents crush on mobile */
+.dash-table { width: 100%; border-collapse: collapse; } /* Prevents crush on mobile */
+.dash-table th,
+.dash-table td {
+  padding: 10px 10px;
+}
+
 .dash-table th { 
   text-align: left; font-size: 11px; text-transform: uppercase; 
-  color: #6b7280; font-weight: 600; padding-bottom: 12px; border-bottom: 1px solid #f3f4f6;
+  color: #6b7280; font-weight: 600; border-bottom: 1px solid #f3f4f6;
 }
-.dash-table td { padding: 12px 0; border-bottom: 1px solid #f9fafb; color: #374151; font-size: 14px; }
+.dash-table td { border-bottom: 1px solid #f9fafb; color: #374151; font-size: 14px; }
 .dash-table tr:last-child td { border-bottom: none; }
 
 .lead-name-link { font-weight: 600; color: #1f2937; text-decoration: none; display: block; }
@@ -170,6 +180,11 @@
 .quick-filters-list { display: flex; flex-direction: column; gap: 8px; }
 
 .filter-row {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.filter-row {
   display: flex; justify-content: space-between; align-items: center;
   padding: 12px; border-radius: 8px; border: 1px solid #f3f4f6;
   text-decoration: none; color: #374151; transition: 0.2s;
@@ -189,15 +204,33 @@
 
 
 /* --- Mobile Responsiveness --- */
-@media (max-width: 1024px) {
-  .dash-layout { grid-template-columns: 1fr; }
+@media (min-width: 1024px) {
+  .dash-layout {
+    grid-template-columns: 2.2fr 1fr;
+  }
 }
 
 @media (max-width: 600px) {
-  .dash-page { padding: 16px; }
-  .dash-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .dashboard-page { padding: 16px; }
+
+  .dash-header {
+    position: relative;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .dash-header .btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
   .kpi-grid { grid-template-columns: 1fr; }
-  
-  /* Show source under name on mobile to save width */
-  .mobile-source { display: block; margin-top: 2px; }
+
+  .mobile-source {
+    display: block;
+    margin-top: 2px;
+  }
 }
+

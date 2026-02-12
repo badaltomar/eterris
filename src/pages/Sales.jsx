@@ -117,35 +117,43 @@ export default function Sales() {
   const lineChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 1500,
+    },
+    animations: {
+      y: {
+        from: 0,
+      },
+    },
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#1f2937',
+        backgroundColor: "#1f2937",
         padding: 12,
         cornerRadius: 8,
         displayColors: false,
         callbacks: {
-          label: (context) => `₹${context.raw.toLocaleString()}`
-        }
-      }
+          label: (context) => `₹${context.raw.toLocaleString()}`,
+        },
+      },
     },
     scales: {
       y: {
         beginAtZero: true,
-        grid: { color: '#f3f4f6', drawBorder: false },
-        ticks: { 
-          color: '#9ca3af',
+        grid: { color: "#f3f4f6", drawBorder: false },
+        ticks: {
+          color: "#9ca3af",
           font: { size: 11 },
-          callback: (value) => `₹${value/1000}k` 
+          callback: (value) => `₹${value / 1000}k`,
         },
-        border: { display: false }
+        border: { display: false },
       },
       x: {
         grid: { display: false },
-        ticks: { color: '#6b7280', font: { size: 11 } },
-        border: { display: false }
-      }
-    }
+        ticks: { color: "#6b7280", font: { size: 11 } },
+        border: { display: false },
+      },
+    },
   };
 
   // Bar Chart Config
@@ -165,27 +173,35 @@ export default function Sales() {
   const barChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    indexAxis: 'y', // Horizontal Bar Chart
+    animation: {
+      duration: 1500,
+    },
+    animations: {
+      x: {
+        from: 0,
+      },
+    },
+    indexAxis: "y", // Horizontal Bar Chart
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#1f2937',
+        backgroundColor: "#1f2937",
         padding: 12,
         cornerRadius: 8,
         displayColors: false,
         callbacks: {
-          label: (context) => `₹${context.raw.toLocaleString()}`
-        }
-      }
+          label: (context) => `₹${context.raw.toLocaleString()}`,
+        },
+      },
     },
     scales: {
       x: { display: true },
       y: {
         grid: { display: false },
-        ticks: { color: '#374151', font: { weight: '500', size: 12 } },
-        border: { display: false }
-      }
-    }
+        ticks: { color: "#374151", font: { weight: "500", size: 12 } },
+        border: { display: false },
+      },
+    },
   };
 
   return (

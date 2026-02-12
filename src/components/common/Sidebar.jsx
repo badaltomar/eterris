@@ -11,7 +11,7 @@ import {
 import "./sidebar.css";
 import { NavLink } from "react-router-dom";
 
-export default function Sidebar() {
+export default function Sidebar({closeMobile}) {
   const [collapsed, setCollapsed] = useState(false);
 
   const menuItems = [
@@ -56,6 +56,7 @@ export default function Sidebar() {
                 className={({ isActive }) =>
                   `nav-item text-decoration-none ${isActive ? "active" : ""}`
                 }
+                onClick={closeMobile}
               >
                 <Icon size={20} className="nav-icon" />
                 {!collapsed && (
