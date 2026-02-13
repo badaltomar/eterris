@@ -16,6 +16,7 @@
 
   import { Flip, ToastContainer } from 'react-toastify'
   import 'react-toastify/dist/ReactToastify.css'
+import Settings from './pages/Settings.jsx'
 
   const router = createBrowserRouter([
     {
@@ -60,6 +61,10 @@
         {
           path: "/reports",
           element: <Reports />
+        },
+        {
+          path: "/settings",
+          element: <Settings />
         },
       ]
     }

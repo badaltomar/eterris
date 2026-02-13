@@ -21,7 +21,7 @@ export default function Footer() {
           <div className="footer-section brand-section">
             <div className="footer-logo">
               <div className="logo-box-sm">E</div>
-              <span className="brand-name">Eterris CRM</span>
+              <span className="brand-name">Eterris</span>
             </div>
             <p className="footer-desc">
               Simplifying customer relationships with data-driven insights, lead
@@ -107,7 +107,7 @@ export default function Footer() {
 
         {/* BOTTOM COPYRIGHT */}
         <div className="footer-bottom">
-          <p>© {currentYear} Eterris CRM Pvt. Ltd. All rights reserved.</p>
+          <p>© {currentYear} Eterris Pvt. Ltd. All rights reserved.</p>
           <div className="legal-links">
             <a href="#">Privacy Policy</a>
             <span className="dot">•</span>

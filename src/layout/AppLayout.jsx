@@ -23,7 +23,7 @@ export default function AppLayout() {
           >
             <Menu size={22} />
           </button>
-          <span className="mobile-brand">Eterris CRM</span>
+          <span className="mobile-brand">Eterris</span>
         </div>
 
         {/* Sidebar */}

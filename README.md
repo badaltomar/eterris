@@ -41,9 +41,18 @@ App will run on: http://localhost:5173/
   <img src="./public/screenshots/4.png" width="45%" style="margin-right: 10px"/>
 </p>
 <p align="center">
+  <img src="./public/screenshots/8.png" width="45%" style="margin-right: 10px"/>
+  <img src="./public/screenshots/9.png" width="45%" style="margin-right: 10px"/>
+</p>
+<p align="center">
   <img src="./public/screenshots/5.png" width="45%" style="margin-right: 10px"/>
   <img src="./public/screenshots/6.png" width="45%" style="margin-right: 10px"/>
 </p>
 <p align="center">
+  <img src="./public/screenshots/11.png" width="45%" style="margin-right: 10px"/>
   <img src="./public/screenshots/7.png" width="45%" style="margin-right: 10px"/>
+</p>
+<p align="center">
+  <img src="./public/screenshots/10.png" width="45%" style="margin-right: 10px"/>
+  <img src="./public/screenshots/12.png" width="45%" style="margin-right: 10px"/>
 </p>

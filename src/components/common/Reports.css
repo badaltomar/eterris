@@ -2,9 +2,9 @@
 /* LAYOUT & TYPOGRAPHY */
 /* ======================== */
 .reports-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 24px ;
+  padding: 24px 32px;
   color: #1e293b;
 }
 
@@ -146,8 +146,8 @@
 }
 
 /* RESPONSIVE */
-@media (max-width: 768px) {
-  .reports-container { padding: 20px 16px; }
+@media (max-width: 850px) {
+  .reports-container { padding: 16px; }
   .charts-grid { grid-template-columns: 1fr; }
   .reports-header { flex-direction: column; align-items: flex-start; gap: 12px; }
   

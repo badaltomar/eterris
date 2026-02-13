@@ -1,0 +1,102 @@
+/* --- CONTAINER & LAYOUT --- */
+.settings-page-container {
+  max-width: 1400px; 
+  margin: 0 auto;
+  padding: 24px 32px;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+.settings-header h2 { font-size: 24px; font-weight: 600; margin:0; }
+.settings-header p { color: #6b7280; font-size: 14px; margin-top: 4px; }
+
+/* THE GRID FIX: 2 Columns on Desktop */
+.settings-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 50% - 50% split */
+  gap: 24px;
+  align-items: start; /* Prevents stretching */
+}
+
+.grid-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* --- CARD STYLES --- */
+.settings-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.card-top { display: flex; gap: 16px; margin-bottom: 16px; }
+.card-icon-wrapper {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.bg-blue { background: #eff6ff; color: #3b82f6; }
+.bg-green { background: #ecfdf5; color: #10b981; }
+.bg-purple { background: #f5f3ff; color: #8b5cf6; }
+.bg-red { background: #fef2f2; color: #ef4444; }
+
+.card-desc { font-size: 14px; color: #6b7280; margin-bottom: 24px; padding-left: 56px; }
+
+/* --- INPUTS --- */
+.form-stack { padding-left: 56px; display: flex; flex-direction: column; gap: 16px; }
+.input-group label { font-size: 13px; font-weight: 500; color: #374151; display: block; margin-bottom: 6px; }
+input { 
+  width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; 
+  border-radius: 8px; font-size: 14px; transition: 0.2s;
+}
+input:focus { border-color: #6366f1; outline: none; }
+
+/* --- BUTTONS --- */
+.card-footer { margin-top: 24px; padding-left: 56px; }
+.btn-primary-small {
+  background: #4f46e5; color: white; border: none; padding: 8px 16px;
+  border-radius: 8px; font-size: 13px; font-weight: 500; display: flex; gap: 8px; alignItems: center; cursor: pointer;
+}
+.btn-primary-outline {
+  background: white; border: 1px solid #e5e7eb; color: #374151;
+  padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer;
+}
+.btn-primary-outline:hover { border-color: #4f46e5; color: #4f46e5; }
+
+/* --- TOGGLES (Switch UI) --- */
+.toggles-container { padding-left: 56px; }
+.toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid #f3f4f6; border-radius: 8px; }
+.toggle-info strong { display: block; font-size: 14px; }
+.toggle-info span { font-size: 13px; color: #9ca3af; }
+
+/* Toggle Switch CSS */
+.switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; }
+.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; }
+input:checked + .slider { background-color: #10b981; }
+input:checked + .slider:before { transform: translateX(16px); }
+.slider.round { border-radius: 34px; }
+.slider.round:before { border-radius: 50%; }
+
+/* --- DANGER --- */
+.danger-zone { border-color: #fecaca; background: #fffafa; }
+.text-red { color: #b91c1c; }
+.danger-actions { padding-left: 56px; }
+.danger-row { display: flex; justify-content: space-between; align-items: center; }
+.btn-danger-solid { background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+
+/* --- MOBILE RESPONSIVE --- */
+@media (max-width: 850px) {
+  .settings-page-container {padding: 16px;}
+  .settings-grid-layout { grid-template-columns: 1fr; /* Stack vertically on mobile */ }
+  .card-desc, .form-stack, .card-footer, .toggles-container, .danger-actions { padding-left: 0; }
+  .card-top { flex-direction: row; align-items: center; }
+}

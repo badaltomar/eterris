@@ -22,9 +22,9 @@
 }
 
 .lead-details-container {
-  max-width: 950px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 24px 32px;
 }
 
 .loading-state {
@@ -567,6 +567,8 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .lead-details-container {padding: 16px;}
+  .comment-footer-actions {opacity: 1;}
   .grid-layout { grid-template-columns: 1fr; gap: 24px; }
   .card-top-section { flex-direction: column; align-items: flex-start; gap: 20px; }
   .action-buttons { width: 100%; justify-content: space-between; }

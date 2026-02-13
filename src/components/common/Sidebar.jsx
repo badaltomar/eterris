@@ -33,7 +33,7 @@ export default function Sidebar({closeMobile}) {
         <div className="sidebar-header">
           <NavLink className="brand text-decoration-none text-dark">
             <div className="logo-box">E</div>
-            {!collapsed && <span className="logo-text">Eterris CRM</span>}
+            {!collapsed && <span className="logo-text">Eterris</span>}
           </NavLink>
 
           <button

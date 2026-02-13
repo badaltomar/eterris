@@ -130,6 +130,7 @@
 
 /* Mobile */
 @media (max-width: 600px) {
+  .agent-page {padding: 16px;}
   .agent-grid { grid-template-columns: 1fr; }
   .agent-header { flex-direction: column; align-items: flex-start; gap: 16px; }
 }
