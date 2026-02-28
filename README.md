@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>🔗 <a href="">View Live Demo</a></strong>
+  <strong>🔗 <a href="https://eterris.vercel.app/">View Live Demo</a></strong>
 </p>
 
 <p align="center">
