@@ -1,4 +1,4 @@
-<h1 align="center">Eterris CRM 📊</h1>
+<h1 align="center">Eterris CRM</h1>
 
 <p align="center">
   A full-stack, responsive Customer Relationship Management (CRM) platform built to streamline sales workflows, manage leads, and provide real-time pipeline analytics.
