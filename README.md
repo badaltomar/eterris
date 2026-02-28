@@ -1,7 +1,49 @@
-# Eterris CRM
+<h1 align="center">Eterris CRM 📊</h1>
 
-Eterris is a full-stack CRM web application built to manage customer data, interactions, and business pipelines in one place. The application emphasizes usability, responsive design, and real-world workflows, making it easy for teams to stay organized and productive.
+<p align="center">
+  A full-stack, responsive Customer Relationship Management (CRM) platform built to streamline sales workflows, manage leads, and provide real-time pipeline analytics.
+</p>
 
+<p align="center">
+  <strong>🔗 <a href="">View Live Demo</a></strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/Express.js-404D59?style=for-the-badge" alt="Express" />
+  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white" alt="Chart.js" />
+</p>
+
+---
+
+## ✨ Key Features
+
+- **Interactive Dashboard:** Real-time revenue tracking, pipeline composition, and lead source analytics utilizing custom-animated Chart.js graphs.
+- **Kanban-Style Pipeline:** Visualize and manage leads across different stages (New, Contacted, Qualified, Proposal Sent, Closed).
+- **Agent Workload Management:** Track agent performance, assign leads, and monitor individual sales velocities.
+- **Advanced Filtering & Sorting:** Backend-driven filtering, search, and sorting mapped to URL parameters for shareable and persistent state.
+- **Activity Timeline:** Log calls, notes, and updates with automated system logs for lead stage changes.
+- **Robust Backend APIs:** RESTful CRUD endpoints for leads and agents with validation, filtering, and clean data modeling.
+- **Beautiful UX/UI:** Fully responsive design built with modern CSS Flexbox/Grid, enhanced with SweetAlert2 modals and toast notifications.
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend:** React.js, Vite, React Router DOM, Chart.js, Lucide React, SweetAlert2, React Toastify  
+**Backend:** Node.js, Express.js, RESTful APIs, Mongoose, dotenv, CORS  
+**Database:** MongoDB
+
+---
+
+## 🔐 Environment Variables
+
+```env
+VITE_API_BASE_URL=http://localhost:5000
+```
+---
 
 ## 🧩 Installation & Setup (Local)
 
@@ -20,7 +62,8 @@ App will run on: http://localhost:5173/
 - Fork the repository
 - Create a new branch (feature/my-feature)
 - Commit changes
-- Create a pull request
+- Push to the branch
+- Open a pull request
 
 ---
 

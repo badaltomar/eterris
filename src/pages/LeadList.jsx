@@ -1,5 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { NavLink, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
 import {
   Filter,
   ArrowLeft,
@@ -17,22 +19,17 @@ import {
   RotateCcw,
 } from "lucide-react";
 import "../components/common/LeadList.css";
-import fakeLeads from "/leads.json";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const getStatusIcon = (status) => {
   switch (status) {
-    case "New":
-      return <Zap size={14} />;
-    case "Contacted":
-      return <Phone size={14} />;
-    case "Qualified":
-      return <CheckCircle size={14} />;
-    case "Proposal Sent":
-      return <FileText size={14} />;
-    case "Closed":
-      return <Inbox size={14} />;
-    default:
-      return <User size={14} />;
+    case "New": return <Zap size={14} />;
+    case "Contacted": return <Phone size={14} />;
+    case "Qualified": return <CheckCircle size={14} />;
+    case "Proposal Sent": return <FileText size={14} />;
+    case "Closed": return <Inbox size={14} />;
+    default: return <User size={14} />;
   }
 };
 
@@ -43,25 +40,14 @@ export default function LeadList() {
   const currentSearch = searchParams.get("q") || "";
   const currentSort = searchParams.get("sort") || "";
 
-  // Function to update a specific filter while keeping others
-  const updateFilter = (key, value) => {
-    const newParams = new URLSearchParams(searchParams);
-
-    if (value && value !== "All") {
-      newParams.set(key, value);
-    } else {
-      newParams.delete(key); // Remove param to keep URL clean
-    }
-
-    setSearchParams(newParams);
-  };
+  // Data & Loading States
+  const [leads, setLeads] = useState([]);
+  const [agents, setAgents] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const isAnyFilterActive = currentAgent || currentStatus || currentSearch || currentSort;
   const [showFilters, setShowFilters] = useState(isAnyFilterActive);
 
-  const priorityOrder = { Low: 1, Medium: 2, High: 3 };
-
-  const allAgents = [...new Set(fakeLeads.map((l) => l.agent.agentName))];
   const allStatuses = [
     "New",
     "Contacted",
@@ -70,44 +56,95 @@ export default function LeadList() {
     "Closed",
   ];
 
-  // FILTER LOGIC (Uses URL params instead of State)
-  const filteredLeads = useMemo(() => {
-    return fakeLeads
-      .filter((lead) => {
-        // Search Filter
-        if (currentSearch) {
-          const lowerQ = currentSearch.toLowerCase();
-          const matches =
-            lead.leadName.toLowerCase().includes(lowerQ) ||
-            lead.leadSource.toLowerCase().includes(lowerQ);
-          if (!matches) return false;
+  // 1. Fetch Agents
+  useEffect(() => {
+    const fetchAgents = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/agents`);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to load agents");
         }
 
-        // Agent Filter
-        if (currentAgent && lead.agent.agentName !== currentAgent) {
-          return false;
-        }
+        const data = await response.json();
+        setAgents(data);
 
-        // Status Filter
-        if (currentStatus && lead.leadStatus !== currentStatus) {
-          return false;
-        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+    fetchAgents();
+  }, []);
 
-        return true;
-      })
-      .sort((a, b) => {
+  // 2. Fetch Leads (Filtering happens on Backend, Sorting happens on Frontend)
+  useEffect(() => {
+    const fetchLeads = async () => {
+      setIsLoading(true);
+      try {
+        const params = new URLSearchParams();
+        if (currentSearch) params.append("q", currentSearch);
+        if (currentStatus) params.append("status", currentStatus);
+        if (currentAgent) params.append("salesAgent", currentAgent);
+
+        // NOTE: We do NOT send 'sort' to backend because backend sorts Priority alphabetically.
+        // We will sort it correctly in the useMemo below.
+
+        const response = await fetch(`${API_BASE_URL}/leads?${params.toString()}`);
+
+        if (!response.ok) throw new Error("Failed to fetch leads");
+
+        const data = await response.json();
+        setLeads(data);
+      } catch (error) {
+        toast.error(error.message || "Something went wrong while fetching leads.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const delayDebounceFn = setTimeout(() => {
+      fetchLeads();
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [currentSearch, currentStatus, currentAgent]);
+
+  const sortedLeads = useMemo(() => {
+    let sorted = [...leads];
+
+    // Priority Value Map
+    const priorityOrder = { High: 3, Medium: 2, Low: 1 };
+
+    if (currentSort) {
+      sorted.sort((a, b) => {
         if (currentSort === "priority-desc") {
+          // High(3) -> Low(1)
           return priorityOrder[b.priority] - priorityOrder[a.priority];
         }
         if (currentSort === "priority-asc") {
+          // Low(1) -> High(3)
           return priorityOrder[a.priority] - priorityOrder[b.priority];
         }
         if (currentSort === "time-asc") return a.timeToClose - b.timeToClose;
         if (currentSort === "time-desc") return b.timeToClose - a.timeToClose;
-
         return 0;
       });
-  }, [currentAgent, currentStatus, currentSearch, currentSort]);
+    }
+
+    return sorted;
+  }, [leads, currentSort]);
+
+
+  const updateFilter = (key, value) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value && value !== "All") {
+      newParams.set(key, value);
+    } else {
+      newParams.delete(key);
+    }
+    setSearchParams(newParams);
+  };
 
   const clearAllFilters = () => {
     setSearchParams({});
@@ -120,8 +157,7 @@ export default function LeadList() {
         <div>
           <h2>Leads</h2>
           <span className="lead-count">
-            {filteredLeads.length}{" "}
-            {filteredLeads.length === 1 ? "lead" : "leads"} found
+            {sortedLeads.length} {sortedLeads.length === 1 ? "lead" : "leads"} found
           </span>
         </div>
 
@@ -167,14 +203,14 @@ export default function LeadList() {
         )}
       </div>
 
-      {/* COLLAPSIBLE FILTERS SECTION */}
+      {/* FILTER DRAWER */}
       <div className={`filter-drawer ${showFilters ? "open" : ""}`}>
         <div className="filter-grid">
           <div className="select-group">
             <label>Status</label>
             <select
               value={currentStatus}
-              onChange={(e) => updateFilter("status", e.target.value)} // Write to URL
+              onChange={(e) => updateFilter("status", e.target.value)}
             >
               <option value="">All Statuses</option>
               {allStatuses.map((status) => (
@@ -192,15 +228,14 @@ export default function LeadList() {
               onChange={(e) => updateFilter("salesAgent", e.target.value)}
             >
               <option value="">All Agents</option>
-              {allAgents.map((agent) => (
-                <option key={agent} value={agent}>
-                  {agent}
+              {agents.map((agent) => (
+                <option key={agent._id} value={agent._id}>
+                  {agent.agentName}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* MERGED SORT DROPDOWN */}
           <div className="select-group">
             <label>Sort Order</label>
             <div className="select-with-icon">
@@ -219,7 +254,7 @@ export default function LeadList() {
         </div>
       </div>
 
-      {/* TABLE HEADERS (Desktop Only) */}
+      {/* TABLE HEADERS */}
       <div className="lead-columns desktop-only">
         <span>Lead Name & Source</span>
         <span>Status</span>
@@ -231,22 +266,23 @@ export default function LeadList() {
 
       {/* LIST SECTION */}
       <section className="lead-list">
-        {filteredLeads.length > 0 ? (
-          filteredLeads.map((lead, i) => (
+        {isLoading ? (
+          <div style={{ display: "flex", justifyContent: "center", padding: "48px 0" }}>
+            <ClipLoader color="#4f46e5" size={40} />
+          </div>
+        ) : sortedLeads.length > 0 ? (
+          sortedLeads.map((lead) => (
             <NavLink
               to={`/leads/${lead._id}`}
               key={lead._id}
               className="lead-row"
             >
-              {/* MOBILE HEADER: WRAPS NAME & STATUS */}
               <div className="mobile-card-header">
-                {/* Column 1: Name */}
                 <div className="lead-main">
                   <h4>{lead.leadName}</h4>
                   <span className="source">{lead.leadSource}</span>
                 </div>
 
-                {/* Column 2: Status */}
                 <div className="col-status">
                   <span
                     className={`status status-${lead.leadStatus.replace(" ", "").toLowerCase()}`}
@@ -257,7 +293,6 @@ export default function LeadList() {
                 </div>
               </div>
 
-              {/* Column 3: Priority */}
               <div className="col-priority">
                 <span className={`priority ${lead.priority.toLowerCase()}`}>
                   {lead.priority === "High" ? (
@@ -269,15 +304,13 @@ export default function LeadList() {
                 </span>
               </div>
 
-              {/* Column 4: Agent */}
               <div className="col-agent">
                 <div className="agent-badge">
                   <User size={12} />
-                  {lead.agent.agentName}
+                  {lead.agent?.agentName || "Unassigned"}
                 </div>
               </div>
 
-              {/* Column 5: Time */}
               <div className="col-time">
                 <span className="time">
                   <Clock size={14} />
@@ -285,7 +318,6 @@ export default function LeadList() {
                 </span>
               </div>
 
-              {/* Column 6: Tags */}
               <div className="tag-list">
                 {lead.tags?.map((t) => (
                   <span

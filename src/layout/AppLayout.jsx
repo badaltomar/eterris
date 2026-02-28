@@ -5,6 +5,8 @@ import Sidebar from "../components/common/Sidebar";
 import "../components/common/App.css";
 import Footer from "../components/common/Footer.jsx";
 import ScrollToTop from "../components/common/ScrollToTop";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -36,6 +38,12 @@ export default function AppLayout() {
           <Sidebar closeMobile={closeSidebar} />
         </div>
 
+        <ToastContainer
+          position="top-right"
+          autoClose={4000}
+          pauseOnHover
+          closeOnClick
+        />
         {/* Page Content */}
         <div className="page-content" style={{ minWidth: 0 }}>
           <Outlet />

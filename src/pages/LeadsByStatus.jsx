@@ -1,5 +1,7 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { NavLink } from "react-router-dom";
+import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
 import {
   Filter,
   ArrowLeft,
@@ -14,8 +16,9 @@ import {
   ArrowUpDown,
   Calendar
 } from "lucide-react";
-import leadsData from "/leads.json";
 import "../components/common/LeadsByStatus.css";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const getStatusIcon = (status) => {
   switch (status) {
@@ -39,15 +42,16 @@ const StatusColumn = ({ status, leads, allAgents }) => {
     let data = [...leads];
 
     if (localAgent !== "All") {
-      data = data.filter(l => l.agent.agentName === localAgent);
+      // access agent name
+      data = data.filter(l => (l.agent?.agentName || "Unassigned") === localAgent);
     }
     if (localPriority !== "All") {
       data = data.filter(l => l.priority === localPriority);
     }
     if (localSort === "asc") {
-      data.sort((a, b) => a.timeToClose - b.timeToClose);
+      data.sort((a, b) => (a.timeToClose || 0) - (b.timeToClose || 0));
     } else if (localSort === "desc") {
-      data.sort((a, b) => b.timeToClose - a.timeToClose);
+      data.sort((a, b) => (b.timeToClose || 0) - (a.timeToClose || 0));
     }
 
     return data;
@@ -67,8 +71,8 @@ const StatusColumn = ({ status, leads, allAgents }) => {
             <h3>{status}</h3>
             <span className="lbs-count">{processedLeads.length}</span>
           </div>
-          
-          <button 
+
+          <button
             className={`lbs-filter-toggle ${hasActiveFilters || showFilters ? "active" : ""}`}
             onClick={() => setShowFilters(!showFilters)}
             title="Filter this column"
@@ -82,7 +86,7 @@ const StatusColumn = ({ status, leads, allAgents }) => {
             <option value="All">All Agents</option>
             {allAgents.map(a => <option key={a} value={a}>{a.split(' ')[0]}</option>)}
           </select>
-          
+
           <div className="lbs-filter-row-2">
             <select value={localPriority} onChange={(e) => setLocalPriority(e.target.value)}>
               <option value="All">Priority</option>
@@ -90,9 +94,9 @@ const StatusColumn = ({ status, leads, allAgents }) => {
               <option value="Medium">Med</option>
               <option value="Low">Low</option>
             </select>
-            
-            <button 
-              className="lbs-sort-btn" 
+
+            <button
+              className="lbs-sort-btn"
               onClick={() => setLocalSort(prev => prev === 'asc' ? 'desc' : 'asc')}
               title="Sort by Time to Close"
             >
@@ -108,7 +112,7 @@ const StatusColumn = ({ status, leads, allAgents }) => {
           {processedLeads.length > 0 ? (
             processedLeads.map((lead) => (
               <NavLink to={`/leads/${lead._id}`} key={lead._id} className="lbs-tile">
-                <div className={`lbs-tile-stripe ${lead.priority.toLowerCase()}`}></div>
+                <div className={`lbs-tile-stripe ${lead.priority?.toLowerCase() || 'medium'}`}></div>
                 <div className="lbs-tile-content">
                   <div className="lbs-tile-top">
                     <span className="lbs-lead-name">{lead.leadName}</span>
@@ -116,10 +120,10 @@ const StatusColumn = ({ status, leads, allAgents }) => {
                   </div>
                   <div className="lbs-tile-meta">
                     <span className="lbs-meta-item">
-                      <User size={10} /> {lead.agent.agentName.split(' ')[0]}
+                      <User size={10} /> {(lead.agent?.agentName || "Unassigned").split(' ')[0]}
                     </span>
                     <span className="lbs-meta-item">
-                      <Calendar size={10} /> {lead.timeToClose}d
+                      <Calendar size={10} /> {lead.timeToClose || 0}d
                     </span>
                   </div>
                 </div>
@@ -137,22 +141,53 @@ const StatusColumn = ({ status, leads, allAgents }) => {
 // --- MAIN COMPONENT ---
 export default function LeadsByStatus() {
   const [globalSearch, setGlobalSearch] = useState("");
-  
-  const allAgents = [...new Set(leadsData.map(l => l.agent.agentName))];
+  const [leadsData, setLeadsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // --- FETCH DATA FROM API ---
+  useEffect(() => {
+    const fetchLeads = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/leads`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to load leads");
+        }
+        const data = await response.json();
+        setLeadsData(data);
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLeads();
+  }, []);
+
+  const allAgents = useMemo(() => {
+    const agents = leadsData.map(l => l.agent?.agentName || "Unassigned");
+    return [...new Set(agents)];
+  }, [leadsData]);
+
   const statusOrder = ["New", "Contacted", "Qualified", "Proposal Sent", "Closed"];
 
   const searchResults = useMemo(() => {
     if (!globalSearch) return leadsData;
-    return leadsData.filter(l => 
-      l.leadName.toLowerCase().includes(globalSearch.toLowerCase())
+    return leadsData.filter(l =>
+      l.leadName?.toLowerCase().includes(globalSearch.toLowerCase()) ||
+      l.agent?.agentName?.toLowerCase().includes(globalSearch.toLowerCase())
     );
-  }, [globalSearch]);
+  }, [globalSearch, leadsData]);
 
   const groupedLeads = useMemo(() => {
     const groups = {};
     statusOrder.forEach(s => groups[s] = []);
+
     searchResults.forEach(lead => {
-      if (groups[lead.leadStatus]) groups[lead.leadStatus].push(lead);
+      // Fallback to "New" if leadStatus is somehow missing or invalid
+      const status = statusOrder.includes(lead.leadStatus) ? lead.leadStatus : "New";
+      groups[status].push(lead);
     });
     return groups;
   }, [searchResults]);
@@ -161,7 +196,7 @@ export default function LeadsByStatus() {
     <div className="lbs-wrapper pageLoadAnimation">
       <header className="lbs-header">
         <div className="lbs-header-left">
-           <NavLink to="/leads" className="back-btn">
+          <NavLink to="/leads" className="back-btn">
             <ArrowLeft size={18} />
           </NavLink>
           <div>
@@ -172,33 +207,38 @@ export default function LeadsByStatus() {
 
         <div className="lbs-header-right">
           <div className="lbs-search-box">
-            <Search size={14} className="search-icon"/>
-            <input 
-              type="text" 
-              placeholder="Search leads..." 
+            <Search size={14} className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search leads..."
               value={globalSearch}
               onChange={(e) => setGlobalSearch(e.target.value)}
             />
-             {globalSearch && <X size={14} className="clear-icon" onClick={()=>setGlobalSearch("")}/>}
+            {globalSearch && <X size={14} className="clear-icon" onClick={() => setGlobalSearch("")} />}
           </div>
           <NavLink to={"/leads/new"} className="btn primary small">
             + Lead
           </NavLink>
         </div>
       </header>
-
-      <div className="lbs-board-wrapper">
-        <div className="lbs-board">
-          {statusOrder.map(status => (
-            <StatusColumn 
-              key={status} 
-              status={status} 
-              leads={groupedLeads[status]} 
-              allAgents={allAgents}
-            />
-          ))}
+      {isLoading ? (
+        <div style={{ display: "flex", justifyContent: "center", padding: "60px 0", width: "100%" }}>
+          <ClipLoader color="#4f46e5" size={40} />
         </div>
-      </div>
+      ) : (
+        <div className="lbs-board-wrapper">
+          <div className="lbs-board">
+            {statusOrder.map(status => (
+              <StatusColumn
+                key={status}
+                status={status}
+                leads={groupedLeads[status]}
+                allAgents={allAgents}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

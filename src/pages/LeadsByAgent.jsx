@@ -1,5 +1,7 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { NavLink } from "react-router-dom";
+import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners"; 
 import {
   Filter,
   ArrowLeft,
@@ -15,8 +17,9 @@ import {
   Calendar,
   Briefcase
 } from "lucide-react";
-import leadsData from "/leads.json";
 import "../components/common/LeadsByAgent.css";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
 
 const getStatusIcon = (status) => {
   switch (status) {
@@ -29,7 +32,6 @@ const getStatusIcon = (status) => {
   }
 };
 
-// --- Helper for Status Colors (for the card badge) ---
 const getStatusClass = (status) => {
   return `status-badge-${status.replace(" ", "").toLowerCase()}`;
 };
@@ -64,7 +66,7 @@ const AgentColumn = ({ agentName, leads, allStatuses }) => {
   }, [leads, localStatus, localPriority, localSort]);
 
   const hasActiveFilters = localStatus !== "All" || localPriority !== "All" || localSort !== "default";
-  const displayName = agentName.split(' ')[0];
+  const displayName = agentName.split(' ')[0] || "Unknown";
 
   return (
     <div className="lba-column">
@@ -80,8 +82,8 @@ const AgentColumn = ({ agentName, leads, allStatuses }) => {
               <span className="lba-count">{processedLeads.length} leads</span>
             </div>
           </div>
-          
-          <button 
+
+          <button
             className={`lba-filter-toggle ${hasActiveFilters || showFilters ? "active" : ""}`}
             onClick={() => setShowFilters(!showFilters)}
             title="Filter this agent's leads"
@@ -96,7 +98,7 @@ const AgentColumn = ({ agentName, leads, allStatuses }) => {
             <option value="All">All Statuses</option>
             {allStatuses.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
-          
+
           <div className="lba-filter-row-2">
             <select value={localPriority} onChange={(e) => setLocalPriority(e.target.value)}>
               <option value="All">Priority</option>
@@ -104,9 +106,9 @@ const AgentColumn = ({ agentName, leads, allStatuses }) => {
               <option value="Medium">Med</option>
               <option value="Low">Low</option>
             </select>
-            
-            <button 
-              className="lba-sort-btn" 
+
+            <button
+              className="lba-sort-btn"
               onClick={() => setLocalSort(prev => prev === 'asc' ? 'desc' : 'asc')}
               title="Sort by Time to Close"
             >
@@ -123,20 +125,20 @@ const AgentColumn = ({ agentName, leads, allStatuses }) => {
           {processedLeads.length > 0 ? (
             processedLeads.map((lead) => (
               <NavLink to={`/leads/${lead._id}`} key={lead._id} className="lba-tile">
-                <div className={`lba-tile-stripe ${lead.priority.toLowerCase()}`}></div>
-                
+                <div className={`lba-tile-stripe ${lead.priority?.toLowerCase() || 'medium'}`}></div>
+
                 <div className="lba-tile-content">
                   <div className="lba-tile-top">
                     <span className="lba-lead-name">{lead.leadName}</span>
                     {lead.priority === 'High' && <span className="urgent-dot"></span>}
                   </div>
-                  
+
                   <div className="lba-tile-meta">
                     <span className={`lba-status-badge ${getStatusClass(lead.leadStatus)}`}>
                       {getStatusIcon(lead.leadStatus)}
                       {lead.leadStatus}
                     </span>
-                    
+
                     <span className="lba-meta-item">
                       <Calendar size={10} /> {lead.timeToClose}d
                     </span>
@@ -156,27 +158,72 @@ const AgentColumn = ({ agentName, leads, allStatuses }) => {
 // --- MAIN COMPONENT ---
 export default function LeadsByAgent() {
   const [globalSearch, setGlobalSearch] = useState("");
-  
+  const [leadsData, setLeadsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // --- FETCH DATA FROM API ---
+  useEffect(() => {
+    const fetchLeads = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/leads`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to load leads");
+        }
+        const data = await response.json();
+        setLeadsData(data);
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLeads();
+  }, []);
+
   // Extract Unique Data
-  const uniqueAgents = [...new Set(leadsData.map(l => l.agent.agentName))];
+  // Note: Handle cases where lead.agent might be null or undefined if deleted
+  const uniqueAgents = useMemo(() => {
+    const agents = leadsData
+      .map(l => l.agent?.agentName)
+      .filter(name => name !== undefined && name !== null);
+    return [...new Set(agents)];
+  }, [leadsData]);
+
   const uniqueStatuses = ["New", "Contacted", "Qualified", "Proposal Sent", "Closed"];
 
   const searchResults = useMemo(() => {
     if (!globalSearch) return leadsData;
-    return leadsData.filter(l => 
-      l.leadName.toLowerCase().includes(globalSearch.toLowerCase())
+    return leadsData.filter(l =>
+      l.leadName?.toLowerCase().includes(globalSearch.toLowerCase()) ||
+      l.agent?.agentName?.toLowerCase().includes(globalSearch.toLowerCase())
     );
-  }, [globalSearch]);
+  }, [globalSearch, leadsData]);
 
   // Group by Agent Name
   const groupedLeads = useMemo(() => {
     const groups = {};
     uniqueAgents.forEach(a => groups[a] = []);
+
+    // Add an 'Unassigned' group just in case any leads don't have an agent
+    groups["Unassigned"] = [];
+
     searchResults.forEach(lead => {
-      if (groups[lead.agent.agentName]) {
-        groups[lead.agent.agentName].push(lead);
+      const agentName = lead.agent?.agentName || "Unassigned";
+      if (groups[agentName]) {
+        groups[agentName].push(lead);
+      } else {
+        // Fallback for leads with agents that weren't caught in uniqueAgents
+        groups[agentName] = [lead];
       }
     });
+
+    // Remove empty Unassigned group to keep UI clean if not needed
+    if (groups["Unassigned"].length === 0) {
+      delete groups["Unassigned"];
+    }
+
     return groups;
   }, [searchResults, uniqueAgents]);
 
@@ -185,7 +232,7 @@ export default function LeadsByAgent() {
       {/* Header */}
       <header className="lba-header">
         <div className="lba-header-left">
-           <NavLink to="/leads/status" className="back-btn">
+          <NavLink to="/leads/status" className="back-btn">
             <ArrowLeft size={18} />
           </NavLink>
           <div>
@@ -196,34 +243,39 @@ export default function LeadsByAgent() {
 
         <div className="lba-header-right">
           <div className="lba-search-box">
-            <Search size={14} className="search-icon"/>
-            <input 
-              type="text" 
-              placeholder="Search leads..." 
+            <Search size={14} className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search leads..."
               value={globalSearch}
               onChange={(e) => setGlobalSearch(e.target.value)}
             />
-             {globalSearch && <X size={14} className="clear-icon" onClick={()=>setGlobalSearch("")}/>}
+            {globalSearch && <X size={14} className="clear-icon" onClick={() => setGlobalSearch("")} />}
           </div>
           <NavLink to="/agents/new" className="btn primary small">
             + New Agent
           </NavLink>
         </div>
       </header>
-
       {/* Board Area */}
-      <div className="lba-board-wrapper">
-        <div className="lba-board">
-          {uniqueAgents.map(agent => (
-            <AgentColumn 
-              key={agent} 
-              agentName={agent} 
-              leads={groupedLeads[agent]} 
-              allStatuses={uniqueStatuses}
-            />
-          ))}
+      {isLoading ? (
+        <div style={{ display: "flex", justifyContent: "center", padding: "60px 0", width: "100%" }}>
+          <ClipLoader color="#4f46e5" size={40} />
         </div>
-      </div>
+      ) : (
+        <div className="lba-board-wrapper">
+          <div className="lba-board">
+            {Object.keys(groupedLeads).map(agent => (
+              <AgentColumn
+                key={agent}
+                agentName={agent}
+                leads={groupedLeads[agent]}
+                allStatuses={uniqueStatuses}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
